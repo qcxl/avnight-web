@@ -8,26 +8,48 @@
 </head>
 <body>
 <header class="topbar">
-  <span class="brand">AVNight</span>
-  <span class="brand-sub">逆向展示站 · 作品浏览</span>
+  <span class="brand"><b>AV</b>Night</span>
+  <span class="brand-sub">逆向展示 · 作品浏览</span>
 </header>
 
 <div class="layout">
   <!-- 左侧主菜单 -->
   <nav id="site-menu" class="site-menu">
-    <button class="site-item active" data-site="reverse">&#9472; 逆向展示站</button>
-    <button class="site-item" data-site="home">&#127968; 首页</button>
-    <button class="site-item" data-site="vip">&#128142; VIP</button>
-    <button class="site-item" data-site="category">&#128451; 分类</button>
+    <div class="site-menu-label">导航</div>
+    <button class="site-item active" data-site="reverse">
+      <svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/></svg>
+      <span>逆向展示站</span>
+    </button>
+    <button class="site-item" data-site="home">
+      <svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9z"/><path d="M9 21v-6h6v6"/></svg>
+      <span>首页</span>
+    </button>
+    <button class="site-item" data-site="vip">
+      <svg viewBox="0 0 24 24"><path d="M6 4h12l2 6-8 10L4 10l2-6z"/><path d="M4 10h16"/><path d="M12 20 8 10"/><path d="M12 20l4-10"/></svg>
+      <span>VIP</span>
+    </button>
+    <button class="site-item" data-site="category">
+      <svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg>
+      <span>分类</span>
+    </button>
   </nav>
 
   <main class="site-main">
-    <!-- ============ 逆向展示站(原样保留: 文档/数据浏览/API控制台) ============ -->
+    <!-- ============ 逆向展示站(文档/数据浏览/API控制台) ============ -->
     <section id="site-reverse" class="site-panel active">
       <nav id="tabs" class="tabs">
-        <button class="tab-btn active" data-tab="docs">&#128196; API 文档</button>
-        <button class="tab-btn" data-tab="browse">&#128451; 数据浏览</button>
-        <button class="tab-btn" data-tab="console">&#127916; API 控制台</button>
+        <button class="tab-btn active" data-tab="docs">
+          <svg viewBox="0 0 24 24"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8l-5-5z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>
+          <span>API 文档</span>
+        </button>
+        <button class="tab-btn" data-tab="browse">
+          <svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg>
+          <span>数据浏览</span>
+        </button>
+        <button class="tab-btn" data-tab="console">
+          <svg viewBox="0 0 24 24"><path d="M4 17l6-5-6-5"/><path d="M12 19h8"/></svg>
+          <span>API 控制台</span>
+        </button>
       </nav>
       <div class="tab-body">
         <section id="tab-docs" class="tab-panel active">
@@ -54,17 +76,17 @@
       </div>
     </section>
 
-    <!-- ============ 产品站: 首页 / VIP / 分类 (子Tab 内容卡片) ============ -->
+    <!-- ============ 产品站: 首页 / VIP / 分类 ============ -->
     <section id="site-home" class="site-panel">
-      <nav id="home-sub" class="sub-tabs"></nav>
+      <nav id="home-sub" class="sub-tabs"><span class="sub-tabs-title">首页</span></nav>
       <div id="home-cards" class="card-grid"></div>
     </section>
     <section id="site-vip" class="site-panel">
-      <nav id="vip-sub" class="sub-tabs"></nav>
+      <nav id="vip-sub" class="sub-tabs"><span class="sub-tabs-title">VIP</span></nav>
       <div id="vip-cards" class="card-grid"></div>
     </section>
     <section id="site-category" class="site-panel">
-      <nav id="category-sub" class="sub-tabs"></nav>
+      <nav id="category-sub" class="sub-tabs"><span class="sub-tabs-title">分类</span></nav>
       <div id="category-cards" class="card-grid"></div>
     </section>
   </main>

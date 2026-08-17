@@ -232,6 +232,8 @@ window.addEventListener("hashchange", () => {
 
 async function ensureSubTabs(site, tabId) {
   const nav = $("#" + SITE_TABS[site]);
+  const siteLabel = { home: "首页", vip: "VIP", category: "分类" }[site] || "";
+  nav.innerHTML = '<span class="sub-tabs-title">' + siteLabel + '</span>';
   if (!CARDS_INDEX) {
     try { CARDS_INDEX = await (await fetch("data/cards/index.json")).json(); }
     catch { return; }
@@ -269,7 +271,7 @@ function renderCard(c) {
   /* 媒体区: 封面 lazy; onerror 降级文字占位(封面为失效动态 CDN, 文字卡兜底) */
   const media = document.createElement("div");
   media.className = "card-media";
-  const fb = () => { const d = document.createElement("div"); d.className = "card-fallback"; d.textContent = "🖼"; return d; };
+  const fb = () => { const d = document.createElement("div"); d.className = "card-fallback"; d.textContent = "AVN"; return d; };
   const cover = c.cover || c.thumb || "";
   if (cover) {
     const img = document.createElement("img");
