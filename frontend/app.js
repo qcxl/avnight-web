@@ -204,7 +204,7 @@ let CARDS_INDEX = null;
 
 function parseRoute() {
   const m = location.hash.match(/^#\/(reverse|home|vip|category)(?:\/([a-z_]+))?/);
-  return { site: m ? m[1] : "reverse", tab: m ? m[2] : null };
+  return { site: m ? m[1] : "home", tab: m ? m[2] : null };
 }
 
 function switchSite(site, tabId) {
@@ -243,7 +243,7 @@ async function ensureSubTabs(site, tabId) {
     const b = document.createElement("button");
     b.className = "sub-tab" + (t.id === active ? " active" : "");
     b.textContent = t.label + (t.low_data ? " (空)" : "");
-    b.onclick = () => history.pushState(null, "", "#/" + site + "/" + t.id);
+    b.onclick = () => { history.pushState(null, "", "#/" + site + "/" + t.id); ensureSubTabs(site, t.id); };
     nav.appendChild(b);
   }
   loadCards(site, active || (tabs[0] && tabs[0].id));
