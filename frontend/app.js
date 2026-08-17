@@ -6,7 +6,7 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 /* 私有 Worker 地址(真实调用). 留空 = 纯回放. 例: "https://avnight-proxy.xxx.workers.dev" */
-const CONFIG = { workerUrl: "" };
+const CONFIG = { workerUrl: "https://avnight-proxy.157676363.workers.dev" }; // 真实调用 Worker
 
 /* ---------- Tab 切换 ---------- */
 document.querySelectorAll(".tab-btn").forEach((btn) => {
