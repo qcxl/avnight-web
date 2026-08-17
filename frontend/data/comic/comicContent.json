@@ -1,0 +1,297 @@
+{
+ "comic": {
+  "authors": [
+   {
+    "name": "Ｈ漫作家",
+    "sid": 2
+   }
+  ],
+  "code": "COMICB-055760",
+  "exclusive": true,
+  "genres": [
+   {
+    "name": "日本语",
+    "sid": 32127
+   },
+   {
+    "name": "中文",
+    "sid": 12890
+   },
+   {
+    "name": "漫画",
+    "sid": 26658
+   }
+  ],
+  "img64": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/1",
+  "imgs64": [
+   {
+    "height": 18908,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/1",
+    "width": 720
+   },
+   {
+    "height": 18555,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/2",
+    "width": 720
+   },
+   {
+    "height": 12548,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/3",
+    "width": 720
+   },
+   {
+    "height": 18888,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/4",
+    "width": 720
+   },
+   {
+    "height": 15159,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/5",
+    "width": 720
+   },
+   {
+    "height": 18330,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/6",
+    "width": 720
+   },
+   {
+    "height": 16477,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/7",
+    "width": 720
+   },
+   {
+    "height": 18875,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/8",
+    "width": 720
+   },
+   {
+    "height": 15115,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/9",
+    "width": 720
+   },
+   {
+    "height": 19158,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/10",
+    "width": 720
+   },
+   {
+    "height": 7413,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/11",
+    "width": 720
+   },
+   {
+    "height": 19124,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/12",
+    "width": 720
+   },
+   {
+    "height": 17718,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/13",
+    "width": 720
+   },
+   {
+    "height": 18672,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/14",
+    "width": 720
+   },
+   {
+    "height": 13426,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/15",
+    "width": 720
+   },
+   {
+    "height": 19118,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/16",
+    "width": 720
+   },
+   {
+    "height": 18653,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/17",
+    "width": 720
+   },
+   {
+    "height": 10314,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/18",
+    "width": 720
+   },
+   {
+    "height": 18847,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/19",
+    "width": 720
+   },
+   {
+    "height": 15165,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/20",
+    "width": 720
+   },
+   {
+    "height": 18488,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/21",
+    "width": 720
+   },
+   {
+    "height": 5047,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/22",
+    "width": 720
+   },
+   {
+    "height": 19060,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/23",
+    "width": 720
+   },
+   {
+    "height": 15250,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/24",
+    "width": 720
+   },
+   {
+    "height": 18815,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/25",
+    "width": 720
+   },
+   {
+    "height": 18974,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/26",
+    "width": 720
+   },
+   {
+    "height": 15287,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/27",
+    "width": 720
+   },
+   {
+    "height": 19013,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/28",
+    "width": 720
+   },
+   {
+    "height": 18829,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/29",
+    "width": 720
+   },
+   {
+    "height": 19101,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/30",
+    "width": 720
+   },
+   {
+    "height": 15335,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/31",
+    "width": 720
+   },
+   {
+    "height": 18993,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/32",
+    "width": 720
+   },
+   {
+    "height": 18580,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/33",
+    "width": 720
+   },
+   {
+    "height": 11601,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/34",
+    "width": 720
+   },
+   {
+    "height": 17628,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/35",
+    "width": 720
+   },
+   {
+    "height": 18988,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/36",
+    "width": 720
+   },
+   {
+    "height": 11420,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/37",
+    "width": 720
+   },
+   {
+    "height": 18818,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/38",
+    "width": 720
+   },
+   {
+    "height": 18552,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/39",
+    "width": 720
+   },
+   {
+    "height": 7195,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/40",
+    "width": 720
+   },
+   {
+    "height": 18974,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/41",
+    "width": 720
+   },
+   {
+    "height": 15216,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/42",
+    "width": 720
+   },
+   {
+    "height": 10621,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/43",
+    "width": 720
+   },
+   {
+    "height": 19090,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/44",
+    "width": 720
+   },
+   {
+    "height": 18899,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/45",
+    "width": 720
+   },
+   {
+    "height": 2552,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/46",
+    "width": 720
+   },
+   {
+    "height": 18239,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/47",
+    "width": 720
+   },
+   {
+    "height": 19036,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/48",
+    "width": 720
+   },
+   {
+    "height": 3160,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/49",
+    "width": 720
+   },
+   {
+    "height": 18776,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/50",
+    "width": 720
+   },
+   {
+    "height": 15556,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/51",
+    "width": 720
+   },
+   {
+    "height": 19146,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/52",
+    "width": 720
+   },
+   {
+    "height": 5269,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-055760/53",
+    "width": 720
+   }
+  ],
+  "onshelf_tm": 1749528000,
+  "title": "戀愛大排檔 1-16",
+  "total": 53
+ }
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AVNight 逆向展示站</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <h1>AVNight 逆向展示站</h1>
+  <nav id="tabs">
+    <button class="tab-btn active" data-tab="docs">&#128196; API 文档</button>
+    <button class="tab-btn" data-tab="browse">&#128451; 数据浏览</button>
+    <button class="tab-btn" data-tab="console">&#127916; API 控制台</button>
+  </nav>
+</header>
+<main>
+  <section id="tab-docs" class="tab-panel active">
+    <aside id="doc-list" class="sidebar"></aside>
+    <article id="doc-view" class="content">
+      <div class="placeholder">&#8592; 从左侧选择文档</div>
+    </article>
+  </section>
+  <section id="tab-browse" class="tab-panel">
+    <aside id="module-list" class="sidebar"></aside>
+    <article id="sample-view" class="content">
+      <div class="placeholder">&#8592; 从左侧选择模块/样本</div>
+    </article>
+  </section>
+  <section id="tab-console" class="tab-panel">
+    <aside id="api-list" class="sidebar"></aside>
+    <div class="content console-panel">
+      <div id="api-form-area">
+        <div class="placeholder">&#8592; 从左侧选择接口</div>
+      </div>
+      <pre id="api-response" class="response-box"></pre>
+    </div>
+  </section>
+</main>
+<script src="vendor/marked.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

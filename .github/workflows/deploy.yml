@@ -1,0 +1,46 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  # 前端产物(frontend/)已作为数据提交入库, CI 直接发布, 无需 avnight_api
+  deploy-pages:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: 上传前端产物
+        uses: actions/upload-pages-artifact@v3
+        with: { path: ./frontend }
+      - name: 部署 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # 可选: 部署 Cloudflare Worker(私有代理). 启用: 仓库 Variables DEPLOY_WORKER=true
+  deploy-worker:
+    runs-on: ubuntu-latest
+    if: ${{ vars.DEPLOY_WORKER == 'true' }}
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - name: 部署 Worker(公网实例: ALLOW_REAL_CALLS=false)
+        run: npx wrangler@latest deploy worker/wrangler.toml --var ALLOW_REAL_CALLS:false
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

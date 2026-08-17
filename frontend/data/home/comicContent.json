@@ -1,0 +1,147 @@
+{
+ "comic": {
+  "authors": [
+   {
+    "name": "butcherboy",
+    "sid": 2582
+   }
+  ],
+  "code": "COMICB-008439",
+  "exclusive": true,
+  "genres": [
+   {
+    "name": "翻译",
+    "sid": 26655
+   },
+   {
+    "name": "中文",
+    "sid": 12890
+   },
+   {
+    "name": "同人志",
+    "sid": 26656
+   }
+  ],
+  "img64": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/1",
+  "imgs64": [
+   {
+    "height": 4096,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/1",
+    "width": 1024
+   },
+   {
+    "height": 4006,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/2",
+    "width": 1024
+   },
+   {
+    "height": 4096,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/3",
+    "width": 1024
+   },
+   {
+    "height": 4096,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/4",
+    "width": 1024
+   },
+   {
+    "height": 3699,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/5",
+    "width": 1024
+   },
+   {
+    "height": 4096,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/6",
+    "width": 1024
+   },
+   {
+    "height": 3440,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/7",
+    "width": 1024
+   },
+   {
+    "height": 4096,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/8",
+    "width": 1024
+   },
+   {
+    "height": 4096,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/9",
+    "width": 1024
+   },
+   {
+    "height": 3654,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/10",
+    "width": 1024
+   },
+   {
+    "height": 2773,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/11",
+    "width": 1024
+   },
+   {
+    "height": 3863,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/12",
+    "width": 1024
+   },
+   {
+    "height": 3664,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/13",
+    "width": 1024
+   },
+   {
+    "height": 3914,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/14",
+    "width": 1024
+   },
+   {
+    "height": 3904,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/15",
+    "width": 1024
+   },
+   {
+    "height": 4096,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/16",
+    "width": 1024
+   },
+   {
+    "height": 4096,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/17",
+    "width": 1024
+   },
+   {
+    "height": 3702,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/18",
+    "width": 1024
+   },
+   {
+    "height": 3866,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/19",
+    "width": 1024
+   },
+   {
+    "height": 3722,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/20",
+    "width": 1024
+   },
+   {
+    "height": 3885,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/21",
+    "width": 1024
+   },
+   {
+    "height": 2009,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/22/p",
+    "width": 1024
+   },
+   {
+    "height": 4096,
+    "image": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-008439/23/p",
+    "width": 1024
+   }
+  ],
+  "onshelf_tm": 1700627010,
+  "title": "HouseHold Affairs 第十话 【卞赤鲤汉化】",
+  "total": 23
+ }
+}

@@ -1,0 +1,173 @@
+{
+ "system": "https://soctop.tianduier.com/v3/",
+ "cpi": "https://cpid.feikaiwadingguan.com/API/",
+ "share": "https://night13.icu/?channelCode=vdoshare&",
+ "systemCN": "https://apid.feikaiwadingguan.com/v3/",
+ "track": "http://111.230.149.205/piwik/piwik.php",
+ "INSTALLED_API": "https://mkt.yhybgl.com/api/",
+ "GTAG_API": [
+  {
+   "apiHost": "https://ag.njliti.com/",
+   "speedTest": "https://ag.njliti.com/js.js"
+  }
+ ],
+ "MKT_API": [
+  {
+   "apiHost": "https://1309454299-euavqv9dv9.ap-nanjing.tencentscf.com/api/",
+   "speedTest": "https://1309454299-euavqv9dv9.ap-nanjing.tencentscf.com/api/speed_test"
+  },
+  {
+   "apiHost": "https://mkt.yhybgl.com/api/",
+   "speedTest": "https://mkt.yhybgl.com/api/speed_test"
+  }
+ ],
+ "PAY_API": [
+  {
+   "apiHost": "https://payh-a9.ygdj8.com/api/",
+   "speedTest": "https://payh-a9.ygdj8.com/"
+  },
+  {
+   "apiHost": "https://payw-a9.ygdj8.com/api/",
+   "speedTest": "https://payw-a9.ygdj8.com/"
+  },
+  {
+   "apiHost": "https://payt2-a9.lhlamp.com/api/",
+   "speedTest": "https://payt2-a9.lhlamp.com/"
+  },
+  {
+   "apiHost": "https://pay-a9.lhlamp.com/api/",
+   "speedTest": "https://pay-a9.lhlamp.com/"
+  }
+ ],
+ "WS_API": [
+  {
+   "apiHost": "https://ws-api.zhongjizhiyao.com/v3_websocket",
+   "speedTest": "https://ws-api.zhongjizhiyao.com/v3/speed_test"
+  }
+ ],
+ "API": [
+  {
+   "apiHost": "https://apiw2.lhlamp.com/v3/",
+   "speedTest": "https://apiw2.lhlamp.com/v3/speed_test"
+  },
+  {
+   "apiHost": "https://apiw.ygdj8.com/v3/",
+   "speedTest": "https://apiw.ygdj8.com/v3/speed_test"
+  },
+  {
+   "apiHost": "https://apit2.lhlamp.com/v3/",
+   "speedTest": "https://apit2.lhlamp.com/v3/speed_test"
+  },
+  {
+   "apiHost": "https://api.atzxyff.com/v3/",
+   "speedTest": "https://api.atzxyff.com/v3/speed_test"
+  }
+ ],
+ "CPIs": {
+  "CN": "https://cpiw.ygdj8.com/API/",
+  "TW": "https://cpi.atzxyff.com/API/"
+ },
+ "CPI": [
+  {
+   "host": "https://cpih.ygdj8.com/API/",
+   "speedTest": "https://cpih.ygdj8.com/API/"
+  },
+  {
+   "host": "https://cpiw.ygdj8.com/API/",
+   "speedTest": "https://cpiw.ygdj8.com/API/"
+  },
+  {
+   "host": "https://cpiw.lhlamp.com/API/",
+   "speedTest": "https://cpiw.lhlamp.com/API/"
+  },
+  {
+   "host": "https://cpi.atzxyff.com/API/",
+   "speedTest": "https://cpi.atzxyff.com/API/"
+  }
+ ],
+ "aops_cover_default": "https://hlaops0.szhhdx.com/",
+ "self_cover_default": "https://shlcl-4.vstonlook.com/",
+ "cover_default": "https://hlcl6.vstonlook.com",
+ "com_cover_default": "https://qc.mangowill.xyz/",
+ "9_cover_default": "https://9qcl3.poiu012.com/",
+ "aops_cover": [
+  {
+   "host": "https://qlaops2.humenhd.com/",
+   "speedTest": "https://qlaops2.humenhd.com/monitor/p"
+  },
+  {
+   "host": "https://hlaops0.szhhdx.com/",
+   "speedTest": "https://hlaops0.szhhdx.com/monitor/p"
+  }
+ ],
+ "self_cover": [
+  {
+   "host": "https://stlcl-1.yjior.com/",
+   "speedTest": "https://stlcl-1.yjior.com/monitor/p"
+  },
+  {
+   "host": "https://shlcl-4.vstonlook.com/",
+   "speedTest": "https://shlcl-4.vstonlook.com/monitor/p"
+  }
+ ],
+ "cover": [
+  {
+   "host": "https://tlcl1.yjior.com/",
+   "speedTest": "https://tlcl1.yjior.com/data/actor/actor5f02efb391464/92c914f1f776691f6f7b8a55bb5a5598"
+  },
+  {
+   "host": "https://hlcl6.vstonlook.com/",
+   "speedTest": "https://hlcl6.vstonlook.com/data/actor/actor5f02efb391464/92c914f1f776691f6f7b8a55bb5a5598"
+  }
+ ],
+ "com_cover": [
+  {
+   "host": "https://qc.mangowill.xyz/",
+   "speedTest": "https://qc.mangowill.xyz/monitor.png"
+  },
+  {
+   "host": "https://qc2.mangowill.xyz/",
+   "speedTest": "https://qc2.mangowill.xyz/monitor.png"
+  }
+ ],
+ "9_cover": [
+  {
+   "host": "https://9qcl3.poiu012.com/",
+   "speedTest": "https://9qcl3.poiu012.com/monitor/p"
+  },
+  {
+   "host": "https://9cl2.xn--9kq84aj0fzy2bp6r.com/",
+   "speedTest": "https://9cl2.xn--9kq84aj0fzy2bp6r.com/monitor/p"
+  }
+ ],
+ "landing": {
+  "always_show": true,
+  "button": "关闭",
+  "button_act": "close",
+  "content": "亲爱的用户：\n为了提供更优质的服务，爱威奶将于以下时间进行系统升级维护：\n🕒 维护时间：2026/06/11 06:00 ~ 12:00\n\n维护期间将暂停服务，请大家提前做好准备。给大家带来不便，敬请谅解！",
+  "end_time": 1677513600,
+  "show_reset_time": 1573062673,
+  "start_time": 1675180800,
+  "title": "系统维修中"
+ },
+ "wanted": {
+  "oops": {
+   "link": {
+    "text": "wantdate.top",
+    "href": "https://wantdate.top"
+   }
+  },
+  "disconnected": {
+   "link": {
+    "text": "前往官网",
+    "href": "https://wantdate.top"
+   }
+  },
+  "fix": {
+   "link": {
+    "text": "wantdate.top",
+    "href": "https://wantdate.top"
+   }
+  }
+ }
+}

@@ -1,0 +1,59 @@
+{
+ "data": [
+  {
+   "dislike_count_monthly": 1,
+   "return_breast_coin_percent": 10.0,
+   "vip_level": 0
+  },
+  {
+   "dislike_count_monthly": 2,
+   "return_breast_coin_percent": 10.0,
+   "vip_level": 1
+  },
+  {
+   "dislike_count_monthly": 3,
+   "return_breast_coin_percent": 15.0,
+   "vip_level": 2
+  },
+  {
+   "dislike_count_monthly": 5,
+   "return_breast_coin_percent": 20.0,
+   "vip_level": 3
+  },
+  {
+   "dislike_count_monthly": 6,
+   "return_breast_coin_percent": 20.0,
+   "vip_level": 4
+  },
+  {
+   "dislike_count_monthly": 8,
+   "return_breast_coin_percent": 25.0,
+   "vip_level": 5
+  },
+  {
+   "dislike_count_monthly": 10,
+   "return_breast_coin_percent": 25.0,
+   "vip_level": 6
+  },
+  {
+   "dislike_count_monthly": 12,
+   "return_breast_coin_percent": 30.0,
+   "vip_level": 7
+  },
+  {
+   "dislike_count_monthly": 13,
+   "return_breast_coin_percent": 35.0,
+   "vip_level": 8
+  },
+  {
+   "dislike_count_monthly": 15,
+   "return_breast_coin_percent": 40.0,
+   "vip_level": 9
+  },
+  {
+   "dislike_count_monthly": 20,
+   "return_breast_coin_percent": 50.0,
+   "vip_level": 10
+  }
+ ]
+}

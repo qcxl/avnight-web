@@ -1,0 +1,2074 @@
+{
+ "boot": [
+  {
+   "key": "speed_test",
+   "path": "/v3/speed_test",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "speedTest.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "android",
+   "path": "/v3/android",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "android.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "visitor",
+   "path": "/v3/202306/visitor",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "visitor.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "main_screen",
+   "path": "/v3/main_screen",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "mainScreen.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "main_screen_breast",
+   "path": "/v3/main_screen/breast_coin_video",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "mainScreenBreast.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "inform",
+   "path": "/v3/inform",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "inform.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "country_codes",
+   "path": "/v3/country_codes",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "countryCodes.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "mkt_report",
+   "path": "/v3/mkt_report",
+   "method": "POST",
+   "params": [],
+   "sampleFile": "mktReport.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "personal_menu",
+   "path": "/v3/personal/menu",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "personalMenu.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "livebroadcast",
+   "path": "/v3/livebroadcast",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "livebroadcast.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "livebroadcast_genres",
+   "path": "/v3/livebroadcast/genres",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "livebroadcastGenres.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "livebroadcast_videos",
+   "path": "/v3/livebroadcast/videos",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "livebroadcastVideos.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "livebroadcast_sponsors",
+   "path": "/v3/livebroadcast/sponsors",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "livebroadcastSponsors.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "chinese_dubbing_mainscreen",
+   "path": "/v3/chinese_dubbing/mainscreen",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "chineseDubbingMainscreen.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "chinese_dubbing_collections",
+   "path": "/v3/chinese_dubbing/collections",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "chineseDubbingCollections.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "gong_chou_main",
+   "path": "/v3/gong_chou/main_screen",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "gongChouMain.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "new_subscriptions",
+   "path": "/v3/new/subscriptions",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "newSubscriptions.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "new_subscriptions_videos",
+   "path": "/v3/new/subscriptions/videos",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "newSubscriptionsVideos.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "member_subscriptions",
+   "path": "/v3/member/subscriptions",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "memberSubscriptions.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "folder_get",
+   "path": "/v3/202212/folder/get",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "folderGet.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "folder_collection_get",
+   "path": "/v3/202212/folder/collection/get",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "folderCollectionGet.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "folder_comic_get",
+   "path": "/v3/202212/folder/comic/get",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "folderComicGet.json",
+   "note": "回放样本",
+   "liveOnly": false
+  }
+ ],
+ "user": [
+  {
+   "key": "login",
+   "path": "/v3/login",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "login.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "register",
+   "path": "/v3/register",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "register.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "add_email",
+   "path": "/v3/add_email",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "addEmail.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "forgot_reset",
+   "path": "/v3/forgot_password/reset",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "forgotReset.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "profile",
+   "path": "/v3/info",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "profile.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "friend",
+   "path": "/v3/friend/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "friend.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "installed_records",
+   "path": "/v3/installed_records/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "installedRecords.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "retention_records",
+   "path": "/v3/retention_records/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "retentionRecords.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "active_records",
+   "path": "/v3/active_records/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "activeRecords.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "personal_menu",
+   "path": "/v3/personal/menu",
+   "method": "GET",
+   "params": [],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  }
+ ],
+ "follow": [
+  {
+   "key": "actor_subscribe",
+   "path": "/v3/actor/subscribe/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "actorSubscribe.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "actor_unsubscribe",
+   "path": "/v3/actor/unsubscribe/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "actorUnsubscribe.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "follow_add",
+   "path": "/v3/follow/add/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "followAdd.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "follow_delete",
+   "path": "/v3/follow/delete/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "followDelete.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "genre_subscribe",
+   "path": "/v3/genre/subscribe/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "genreSubscribe.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "genre_unsubscribe",
+   "path": "/v3/genre/unsubscribe/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "genreUnsubscribe.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "new_subscriptions",
+   "path": "/v3/new/subscriptions",
+   "method": "GET",
+   "params": [],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "new_subscriptions_videos",
+   "path": "/v3/new/subscriptions/videos",
+   "method": "GET",
+   "params": [],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  }
+ ],
+ "video": [
+  {
+   "key": "videos_page",
+   "path": "/v3/videos?page=",
+   "method": "POST",
+   "params": [
+    {
+     "name": "page",
+     "type": "query",
+     "required": true,
+     "example": "1",
+     "workerInjected": false
+    }
+   ],
+   "sampleFile": "videosPage.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "videos_next",
+   "path": "/v3/videos?next=",
+   "method": "GET",
+   "params": [
+    {
+     "name": "next",
+     "type": "query",
+     "required": true,
+     "example": "0",
+     "workerInjected": false
+    }
+   ],
+   "sampleFile": "videosNext.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "videos_type",
+   "path": "/v3/videos?video_type=",
+   "method": "GET",
+   "params": [
+    {
+     "name": "video_type",
+     "type": "query",
+     "required": true,
+     "example": "ngs",
+     "workerInjected": false
+    }
+   ],
+   "sampleFile": "videosType.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "videos_long",
+   "path": "/v3/videos?actor_type=long&limit=",
+   "method": "GET",
+   "params": [
+    {
+     "name": "actor_type",
+     "type": "query",
+     "required": true,
+     "example": "",
+     "workerInjected": false
+    },
+    {
+     "name": "limit",
+     "type": "query",
+     "required": true,
+     "example": "",
+     "workerInjected": false
+    }
+   ],
+   "sampleFile": "videosLong.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "videos_ngs",
+   "path": "/v3/videos?actor_type=ngs&limit=",
+   "method": "GET",
+   "params": [
+    {
+     "name": "actor_type",
+     "type": "query",
+     "required": true,
+     "example": "",
+     "workerInjected": false
+    },
+    {
+     "name": "limit",
+     "type": "query",
+     "required": true,
+     "example": "",
+     "workerInjected": false
+    }
+   ],
+   "sampleFile": "videosNgs.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "videos_info",
+   "path": "/v3/videos/info",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "videosInfo.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "videos_index_full",
+   "path": "/v3/videos/index/full/0",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "videosIndexFull.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "videos_tagged",
+   "path": "/v3/videos/tagged",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "videosTagged.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "video_playinfo",
+   "path": "/v3/video/{code}/info",
+   "method": "GET",
+   "params": [
+    {
+     "name": "code",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    }
+   ],
+   "sampleFile": "videoPlayinfo.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "video_suggestions",
+   "path": "/v3/video/{code}/suggestions",
+   "method": "GET",
+   "params": [
+    {
+     "name": "code",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    }
+   ],
+   "sampleFile": "videoSuggestions.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "video_speed_test",
+   "path": "/v3/video_speed_test",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "videoSpeedTest.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "new_videos",
+   "path": "/v3/new/videos",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "newVideos.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "new_top_videos",
+   "path": "/v3/new/top/videos",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "newTopVideos.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "recommend",
+   "path": "/v3/recommend",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "recommend.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "result_popular_video",
+   "path": "/v3/result/popular_week/video/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "resultPopularVideo.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "result_topic_video",
+   "path": "/v3/result/topic/video",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "resultTopicVideo.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "yt_hot_videos",
+   "path": "/v3/yt/hot/videos",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "ytHotVideos.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "video_highlight",
+   "path": "/v3/video/{code}/highlight",
+   "method": "GET",
+   "params": [
+    {
+     "name": "code",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    }
+   ],
+   "sampleFile": "videoHighlight.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "watch_video",
+   "path": "/v3/watch/video/{code}",
+   "method": "GET",
+   "params": [
+    {
+     "name": "code",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    }
+   ],
+   "sampleFile": "watchVideo.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "video_clip_overview",
+   "path": "/v3/video_clip",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "videoClipOverview.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "video_clip_information_station",
+   "path": "/v3/video_clip/information_station",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "videoClipInformationStation.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "video_page_prompt_project",
+   "path": "/v3/video_page_prompt_project",
+   "method": "POST",
+   "params": [],
+   "sampleFile": "videoPagePromptProject.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "videos_page_post",
+   "path": "/v3/videos/page?cdn=tc",
+   "method": "POST",
+   "params": [
+    {
+     "name": "cdn",
+     "type": "query",
+     "required": true,
+     "example": "",
+     "workerInjected": false
+    }
+   ],
+   "sampleFile": "videosPagePost.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "refresh_token",
+   "path": "/v3/refresh_token",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "refreshToken.json",
+   "note": "回放样本",
+   "liveOnly": false
+  }
+ ],
+ "category": [
+  {
+   "key": "actors",
+   "path": "/v3/actor/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "actors.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "actor_detail",
+   "path": "/v3/actor/{id}",
+   "method": "GET",
+   "params": [
+    {
+     "name": "id",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    }
+   ],
+   "sampleFile": "actorDetail.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "category_actors",
+   "path": "/v3/category/actors",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "categoryActors.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "category_top_actors",
+   "path": "/v3/category/top_actors",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "categoryTopActors.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "category_search",
+   "path": "/v3/category/search/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "categorySearch.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "discover_genre",
+   "path": "/v3/discover/genre/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "discoverGenre.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "genre",
+   "path": "/v3/genre/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "genre.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "filter_category",
+   "path": "/v3/filter/category",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "filterCategory.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "topics",
+   "path": "/v3/topics/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "topics.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "topic",
+   "path": "/v3/topic/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "topic.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "video_clip_topic",
+   "path": "/v3/video_clip/topic",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "videoClipTopic.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "video_clip_topic",
+   "path": "/v3/video_clip/topic",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "videoClipTopic.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "company_videos",
+   "path": "/v3/company/{id}/videos",
+   "method": "GET",
+   "params": [
+    {
+     "name": "id",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    }
+   ],
+   "sampleFile": "companyVideos.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "categorys_overview",
+   "path": "/v3/categorys",
+   "method": "GET",
+   "params": [],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "filter_category_videos",
+   "path": "/v3/filter/category/{type}/{id}/videos",
+   "method": "GET",
+   "params": [
+    {
+     "name": "type",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    },
+    {
+     "name": "id",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    }
+   ],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "main_screen_popular_classic_comic",
+   "path": "/v3/main_screen/popular_classic/comic",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "mainScreenPopularClassicComic.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vip_topic",
+   "path": "/v3/vip/topic",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "vipTopic.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vip_ranking_videos",
+   "path": "/v3/vip/ranking/videos",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "vipRankingVideos.json",
+   "note": "回放样本",
+   "liveOnly": false
+  }
+ ],
+ "breast_coin": [
+  {
+   "key": "buy",
+   "path": "/v3/breast_coin/buy/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "buy.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "rebate_table",
+   "path": "/v3/breast_coin/rebate_table",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "rebateTable.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "video_info",
+   "path": "/v3/breast_coin_video/info",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "videoInfo.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "video_buy",
+   "path": "/v3/breast_coin_video/buy",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "videoBuy.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "video_bonus",
+   "path": "/v3/breast_coin_video/bonus",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "videoBonus.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "video_collections",
+   "path": "/v3/breast_coin_video/collections/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "videoCollections.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "video_gossip",
+   "path": "/v3/breast_coin_video/gossip/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "videoGossip.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "main_screen_breast",
+   "path": "/v3/main_screen/breast_coin_video",
+   "method": "GET",
+   "params": [],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "member_profit",
+   "path": "/v3/member/breast_coin_video/profit",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "memberProfit.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "exchange_redeem",
+   "path": "/v3/exchange/redeem_code",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "exchangeRedeem.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "exchange_redeem",
+   "path": "/v3/exchange/redeem_code",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "exchangeRedeem.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "video_by_type",
+   "path": "/v3/breast_coin_video/{type}",
+   "method": "GET",
+   "params": [
+    {
+     "name": "type",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    }
+   ],
+   "sampleFile": "videoByType.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "video_collections_info",
+   "path": "/v3/breast_coin_video/collections/info",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "videoCollectionsInfo.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "video_bonus_video_list",
+   "path": "/v3/breast_coin_video/bonus/video_list",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "videoBonusVideoList.json",
+   "note": "回放样本",
+   "liveOnly": false
+  }
+ ],
+ "vip": [
+  {
+   "key": "vip_categorys",
+   "path": "/v3/vip/categorys",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "vipCategorys.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vip_company",
+   "path": "/v3/vip/company",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "vipCompany.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vip_dinabz",
+   "path": "/v3/vip/dinabz",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "vipDinabz.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vip_fpie",
+   "path": "/v3/vip/fpie",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "vipFpie.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vip_vr",
+   "path": "/v3/vip/vr",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "vipVr.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vip_wumi_categorys",
+   "path": "/v3/vip/wumi/categorys",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "vipWumiCategorys.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vip_wumi_comics",
+   "path": "/v3/vip/wumi/comics",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "vipWumiComics.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vip_wumi_videos",
+   "path": "/v3/vip/wumi/videos",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "vipWumiVideos.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "member_page_duration",
+   "path": "/v3/member_page/duration",
+   "method": "POST",
+   "params": [],
+   "sampleFile": "memberPageDuration.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "member_page_genres",
+   "path": "/v3/member_page/genres",
+   "method": "POST",
+   "params": [],
+   "sampleFile": "memberPageGenres.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "member_page_visibility",
+   "path": "/v3/member_page/set_visibility",
+   "method": "POST",
+   "params": [],
+   "sampleFile": "memberPageVisibility.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "leaderboard_me",
+   "path": "/v3/leaderboard/me",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "leaderboardMe.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vip_ranking_videos",
+   "path": "/v3/vip/ranking/videos",
+   "method": "GET",
+   "params": [],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "gong_chou",
+   "path": "/v3/gong_chou/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "gongChou.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "gong_chou_main",
+   "path": "/v3/gong_chou/main_screen",
+   "method": "GET",
+   "params": [],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "gong_chou_project",
+   "path": "/v3/gong_chou/project/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "gongChouProject.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "gong_chou_visit",
+   "path": "/v3/gong_chou/visit/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "gongChouVisit.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "gong_chou_visit",
+   "path": "/v3/gong_chou/visit/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "gongChouVisit.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vip_actor",
+   "path": "/v3/vip/actor",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "vipActor.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vip_anli",
+   "path": "/v3/vip/anli",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "vipAnli.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vip_topic_videos",
+   "path": "/v3/vip/topic/{id}/videos",
+   "method": "GET",
+   "params": [
+    {
+     "name": "id",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    }
+   ],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vip_fpie",
+   "path": "/v3/vip/fpie",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "vipFpie.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "fpie_paging",
+   "path": "/v3/fpie",
+   "method": "GET",
+   "params": [],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vip_main_screen",
+   "path": "/v3/vip_main_screen_2024",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "vipMainScreen.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vip_main_screen_high_energy",
+   "path": "/v3/vip_main_screen_2024/high_energy/120-",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "vipMainScreenHighEnergy.json",
+   "note": "回放样本",
+   "liveOnly": false
+  }
+ ],
+ "live": [
+  {
+   "key": "livebroadcast_genres",
+   "path": "/v3/livebroadcast/genres",
+   "method": "GET",
+   "params": [],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "livebroadcast_sponsors",
+   "path": "/v3/livebroadcast/sponsors",
+   "method": "GET",
+   "params": [],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "livebroadcast_videos",
+   "path": "/v3/livebroadcast/videos",
+   "method": "GET",
+   "params": [],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "watch_live",
+   "path": "/v3/watch/livebroadcast/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "watchLive.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "live_kr_genre",
+   "path": "/v3/live/kr/genre/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "liveKrGenre.json",
+   "note": "回放样本",
+   "liveOnly": false
+  }
+ ],
+ "comic": [
+  {
+   "key": "comic_overview",
+   "path": "/v3/comic",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "comicOverview.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "comic_author",
+   "path": "/v3/comic/author/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "comicAuthor.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "comic_category",
+   "path": "/v3/comic/category",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "comicCategory.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "comic_content",
+   "path": "/v3/comic/content/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "comicContent.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "comic_heaven_anime",
+   "path": "/v3/comic/heaven/anime",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "comicHeavenAnime.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "comic_heaven_comic",
+   "path": "/v3/comic/heaven/comic",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "comicHeavenComic.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "comics_info",
+   "path": "/v3/comics/info",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "comicsInfo.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "result_popular_comic",
+   "path": "/v3/result/popular_week/comic/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "resultPopularComic.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "result_topic_comic",
+   "path": "/v3/result/topic/comic",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "resultTopicComic.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "xchina_models",
+   "path": "/v3/xchina/models",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "xchinaModels.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "xchina_model",
+   "path": "/v3/xchina/model/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "xchinaModel.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "xchina_models_country",
+   "path": "/v3/xchina/models/country/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "xchinaModelsCountry.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "chinese_dubbing_mainscreen",
+   "path": "/v3/chinese_dubbing/mainscreen",
+   "method": "GET",
+   "params": [],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "chinese_dubbing_buy",
+   "path": "/v3/chinese_dubbing/buy",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "chineseDubbingBuy.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "chinese_dubbing_collections",
+   "path": "/v3/chinese_dubbing/collections/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "chineseDubbingCollections.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "chinese_dubbing_collections",
+   "path": "/v3/chinese_dubbing/collections/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "chineseDubbingCollections.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "comic_all",
+   "path": "/v3/comic/all",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "comicAll.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "comic_category_videos",
+   "path": "/v3/comic/category/{id}/videos",
+   "method": "GET",
+   "params": [
+    {
+     "name": "id",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    }
+   ],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "comic_category_comics",
+   "path": "/v3/comic/category/{id}/comics",
+   "method": "GET",
+   "params": [
+    {
+     "name": "id",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    }
+   ],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "comic_hot",
+   "path": "/v3/comic/hot",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "comicHot.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "xchina_collection",
+   "path": "/v3/xchina/collection/{id}",
+   "method": "GET",
+   "params": [
+    {
+     "name": "id",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    }
+   ],
+   "sampleFile": "xchinaCollection.json",
+   "note": "回放样本",
+   "liveOnly": false
+  }
+ ],
+ "social": [
+  {
+   "key": "collection_add",
+   "path": "/v3/collection/add",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "collectionAdd.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "collection_delete",
+   "path": "/v3/collection/delete",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "collectionDelete.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "collection_comic_add",
+   "path": "/v3/collection/comic/add",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "collectionComicAdd.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "collection_comic_delete",
+   "path": "/v3/collection/comic/delete",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "collectionComicDelete.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "collections_info",
+   "path": "/v3/collections/info",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "collectionsInfo.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "folder_add",
+   "path": "/v3/folder/add",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "folderAdd.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "folder_delete",
+   "path": "/v3/folder/delete",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "folderDelete.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "folder_get",
+   "path": "/v3/202212/folder/get",
+   "method": "GET",
+   "params": [],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "folder_rename",
+   "path": "/v3/folder/rename/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "folderRename.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "folder_update",
+   "path": "/v3/folder/update/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "folderUpdate.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "folder_pin",
+   "path": "/v3/folder/pin",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "folderPin.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "folder_collection_add",
+   "path": "/v3/folder/collection/add",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "folderCollectionAdd.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "folder_collection_delete",
+   "path": "/v3/folder/collection/delete",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "folderCollectionDelete.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "folder_collection_pin",
+   "path": "/v3/folder/collection/pin",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "folderCollectionPin.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "folder_collection_rename",
+   "path": "/v3/folder/collection/rename/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "folderCollectionRename.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "folder_comic_add",
+   "path": "/v3/folder/comic/add",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "folderComicAdd.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "folder_comic_delete",
+   "path": "/v3/folder/comic/delete",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "folderComicDelete.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "import_folder",
+   "path": "/v3/import/folder/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "importFolder.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "highlight_add",
+   "path": "/v3/highlight/add",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "highlightAdd.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "highlight_delete",
+   "path": "/v3/highlight/delete",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "highlightDelete.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "wishes_add",
+   "path": "/v3/wishes/add",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "wishesAdd.json",
+   "note": "回放样本",
+   "liveOnly": false
+  }
+ ],
+ "misc": [
+  {
+   "key": "config_app",
+   "path": "/v3/config/app/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "configApp.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "mission_check_in",
+   "path": "/v3/mission/check_in",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "missionCheckIn.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "draw_start",
+   "path": "/v3/draw/start",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "drawStart.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "draw_reward_pool",
+   "path": "/v3/draw/reward_pool",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "drawRewardPool.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "coupons",
+   "path": "/v3/coupons/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "coupons.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "coupon_delete_used",
+   "path": "/v3/coupon/delete_used",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "couponDeleteUsed.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "coupon_delete_expired",
+   "path": "/v3/coupon/delete_expired",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "couponDeleteExpired.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "download_info",
+   "path": "/v3/download/info",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "downloadInfo.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "download_history",
+   "path": "/v3/download/history/overview",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "downloadHistory.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "download_video",
+   "path": "/v3/download/video/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "downloadVideo.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "feedback",
+   "path": "/v3/feedback/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "feedback.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "search",
+   "path": "/v3/search/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "search.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "clean_mosaic_boost",
+   "path": "/v3/clean_mosaic/help_power/boost",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "cleanMosaicBoost.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "clean_mosaic_count",
+   "path": "/v3/clean_mosaic/help_power/count",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "cleanMosaicCount.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "clean_mosaic_leaderboard",
+   "path": "/v3/clean_mosaic/leaderboard",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "cleanMosaicLeaderboard.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "clean_mosaic_record",
+   "path": "/v3/clean_mosaic/record",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "cleanMosaicRecord.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "clean_mosaic_record_delete",
+   "path": "/v3/clean_mosaic/record/delete",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "cleanMosaicRecordDelete.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "clean_mosaic_schedule",
+   "path": "/v3/clean_mosaic/record/schedule",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "cleanMosaicSchedule.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "studio",
+   "path": "/v3/studio/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "studio.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vr_studio",
+   "path": "/v3/vr_studio/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "vrStudio.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "vr_studio_tab",
+   "path": "/v3/vr_studio/tab",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "vrStudioTab.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "onlyfans_actor",
+   "path": "/v3/onlyfans/actor/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "onlyfansActor.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "ytstudio",
+   "path": "/v3/ytstudio/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "ytstudio.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "index_viewer",
+   "path": "/v3/index_viewer/",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "indexViewer.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "yt_studios",
+   "path": "/v3/yt/studios",
+   "method": "GET",
+   "params": [],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "yt_new_videos",
+   "path": "/v3/yt/new/videos",
+   "method": "GET",
+   "params": [],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "cpi_get_device",
+   "path": "/API/GetDevice",
+   "method": "GET",
+   "params": [],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "cpi_get_config",
+   "path": "/API/GetConfig",
+   "method": "GET",
+   "params": [],
+   "sampleFile": null,
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "anime_all",
+   "path": "/v3/anime/all",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "animeAll.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "anime_hot",
+   "path": "/v3/anime/hot",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "animeHot.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "deepfake_actors",
+   "path": "/v3/deepfake/actors",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "deepfakeActors.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "deepfake_actor_videos",
+   "path": "/v3/deepfake/actor/{id}/videos",
+   "method": "GET",
+   "params": [
+    {
+     "name": "id",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    }
+   ],
+   "sampleFile": "deepfakeActorVideos.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "deepfake_actor_collections",
+   "path": "/v3/deepfake/actor/{id}/collections",
+   "method": "GET",
+   "params": [
+    {
+     "name": "id",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    }
+   ],
+   "sampleFile": "deepfakeActorCollections.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "deepfake_collection",
+   "path": "/v3/deepfake/collection/{id}",
+   "method": "GET",
+   "params": [
+    {
+     "name": "id",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    }
+   ],
+   "sampleFile": "deepfakeCollection.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "lite_category_videos",
+   "path": "/v3/lite/category/{id}/videos",
+   "method": "GET",
+   "params": [
+    {
+     "name": "id",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    }
+   ],
+   "sampleFile": "liteCategoryVideos.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "onlyfans_overview",
+   "path": "/v3/onlyfans",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "onlyfansOverview.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "onlyfans_fever",
+   "path": "/v3/onlyfans/fever/videos",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "onlyfansFever.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "clean_mosaic_schedule_by_sort",
+   "path": "/v3/clean_mosaic/schedule",
+   "method": "GET",
+   "params": [],
+   "sampleFile": "cleanMosaicScheduleBySort.json",
+   "note": "回放样本",
+   "liveOnly": false
+  },
+  {
+   "key": "clean_mosaic_count_by_type",
+   "path": "/v3/clean_mosaic/{type}/count",
+   "method": "GET",
+   "params": [
+    {
+     "name": "type",
+     "type": "path",
+     "required": true,
+     "example": "MISM-325-"
+    }
+   ],
+   "sampleFile": "cleanMosaicCountByType.json",
+   "note": "回放样本",
+   "liveOnly": false
+  }
+ ]
+}

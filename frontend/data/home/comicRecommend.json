@@ -1,0 +1,212 @@
+{
+ "comics": [
+  {
+   "authors": [
+    {
+     "name": "Ｈ漫作家",
+     "sid": 2
+    }
+   ],
+   "code": "COMICB-039987",
+   "exclusive": true,
+   "genres": [
+    {
+     "name": "全彩",
+     "sid": 26707
+    },
+    {
+     "name": "全码",
+     "sid": 26698
+    },
+    {
+     "name": "偷吃",
+     "sid": 7135
+    },
+    {
+     "name": "剧情向",
+     "sid": 26787
+    },
+    {
+     "name": "翻译",
+     "sid": 26655
+    },
+    {
+     "name": "中文",
+     "sid": 12890
+    },
+    {
+     "name": "漫画",
+     "sid": 26658
+    }
+   ],
+   "img64": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-039987/1",
+   "onshelf_tm": 1741881609,
+   "title": "前女友 1-10 中文翻译（更新中）",
+   "total": 54
+  },
+  {
+   "authors": [
+    {
+     "name": "Ｈ漫作家",
+     "sid": 2
+    }
+   ],
+   "code": "COMIC-5119-001",
+   "exclusive": true,
+   "genres": [
+    {
+     "name": "同人",
+     "sid": 3586
+    },
+    {
+     "name": "全彩",
+     "sid": 26707
+    }
+   ],
+   "img64": "https://shlcl-4.vstonlook.com/xchina/comicb/COMIC-5119-001/20200320130910257559",
+   "onshelf_tm": 1784865601,
+   "title": "The Family Hike （Chinese） 第1话",
+   "total": 30
+  },
+  {
+   "authors": [
+    {
+     "name": "nabe",
+     "sid": 2123
+    }
+   ],
+   "code": "COMIC-12441",
+   "exclusive": true,
+   "genres": [
+    {
+     "name": "全彩",
+     "sid": 26707
+    },
+    {
+     "name": "同人",
+     "sid": 3586
+    }
+   ],
+   "img64": "https://shlcl-4.vstonlook.com/xchina/comic/COMIC-12441/20200326013410010153",
+   "onshelf_tm": 1785600064,
+   "title": "返り咲き～若い雄との煩悩子作り～",
+   "total": 64
+  },
+  {
+   "authors": [
+    {
+     "name": "hoshino fuuta",
+     "sid": 3705
+    }
+   ],
+   "code": "COMICB-014729",
+   "exclusive": true,
+   "genres": [
+    {
+     "name": "萝莉控",
+     "sid": 11492
+    },
+    {
+     "name": "正太控",
+     "sid": 22430
+    },
+    {
+     "name": "泳装",
+     "sid": 26951
+    },
+    {
+     "name": "剧情向",
+     "sid": 26787
+    },
+    {
+     "name": "晒痕",
+     "sid": 4771
+    },
+    {
+     "name": "翻译",
+     "sid": 26655
+    },
+    {
+     "name": "中文",
+     "sid": 12890
+    },
+    {
+     "name": "漫画",
+     "sid": 26658
+    }
+   ],
+   "img64": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-014729/1/p",
+   "onshelf_tm": 1706932847,
+   "title": "いたずらスイッチ",
+   "total": 148
+  },
+  {
+   "authors": [
+    {
+     "name": "Ｈ漫作家",
+     "sid": 2
+    }
+   ],
+   "code": "COMIC-14652",
+   "exclusive": true,
+   "genres": [
+    {
+     "name": "未看完1",
+     "sid": 56366
+    },
+    {
+     "name": "日漫",
+     "sid": 51088
+    }
+   ],
+   "img64": "https://shlcl-4.vstonlook.com/xchina/comic/COMIC-14652/20200327024310054515",
+   "onshelf_tm": 1785859256,
+   "title": "ホントノオクサマ～浮気常習犯の妻たち～",
+   "total": 120
+  },
+  {
+   "authors": [
+    {
+     "name": "yomogi ringo",
+     "sid": 4963
+    }
+   ],
+   "code": "COMICB-027745",
+   "exclusive": true,
+   "genres": [
+    {
+     "name": "肛门",
+     "sid": 8417
+    },
+    {
+     "name": "正太控",
+     "sid": 22430
+    },
+    {
+     "name": "耽美",
+     "sid": 446
+    },
+    {
+     "name": "只有男性",
+     "sid": 26671
+    },
+    {
+     "name": "翻译",
+     "sid": 26655
+    },
+    {
+     "name": "中文",
+     "sid": 12890
+    },
+    {
+     "name": "同人志",
+     "sid": 26656
+    }
+   ],
+   "img64": "https://shlcl-4.vstonlook.com/xchina/comicb/COMICB-027745/1",
+   "onshelf_tm": 1724904000,
+   "title": "承知しました。",
+   "total": 24
+  }
+ ]
+}

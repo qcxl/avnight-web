@@ -1,0 +1,13 @@
+name = "avnight-proxy"
+main = "src/index.js"
+compatibility_date = "2025-06-01"
+
+# 私有实例用(真实调用); 公网实例部署时设 false
+[vars]
+ALLOW_REAL_CALLS = "false"
+
+[[kv_namespaces]]
+binding = "AVNIGHT_KV"
+id = ""            # 创建 KV namespace 后填入
+
+# 正式环境覆盖: wrangler deploy --var ALLOW_REAL_CALLS:true
