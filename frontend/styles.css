@@ -209,3 +209,16 @@ button { font-family: inherit; }
 ::-webkit-scrollbar-thumb { background: #2a3344; border-radius: 5px; }
 ::-webkit-scrollbar-thumb:hover { background: #3a4560; }
 ::-webkit-scrollbar-track { background: transparent; }
+
+/* 文字海报(无封面时的卡片占位) */
+.card-media.has-poster {
+  background:
+    radial-gradient(120% 120% at 15% 0%, #232b3f 0%, #141926 45%, #0c0e13 100%);
+}
+.card-poster { display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; height: 100%; padding: 14px 14px 12px; }
+.poster-title {
+  font-size: 16px; font-weight: 700; color: #fff; line-height: 1.35;
+  display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+  text-shadow: 0 2px 8px rgba(0,0,0,.65);
+}
+.poster-code { font-family: var(--font-mono); font-size: 12px; color: var(--accent); letter-spacing: .5px; }

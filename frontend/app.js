@@ -264,37 +264,38 @@ async function loadCards(site, tabId) {
     grid.innerHTML = '<div class="placeholder">加载失败: ' + esc(e) + "</div>";
   }
 }
-
 function renderCard(c) {
   const el = document.createElement("div");
   el.className = "card" + (c.type === "actor" ? " actor" : "");
-  /* 媒体区: 封面 lazy; onerror 降级文字占位(封面为失效动态 CDN, 文字卡兜底) */
+  const cover = c.cover || c.thumb || "";
   const media = document.createElement("div");
   media.className = "card-media";
-  const fb = () => { const d = document.createElement("div"); d.className = "card-fallback"; d.textContent = "AVN"; return d; };
-  const cover = c.cover || c.thumb || "";
+  /* 无封面(或加载失败) → 文字海报: 标题大字 + 编号, 避免空深色块 */
+  const showPoster = () => {
+    media.classList.add("has-poster");
+    media.innerHTML =
+      '<div class="card-poster">' +
+        '<div class="poster-title">' + esc(c.title || c.name || c.code || "AVNight") + "</div>" +
+        (c.code ? '<div class="poster-code">' + esc(c.code) + "</div>" : "") +
+      "</div>";
+  };
   if (cover) {
     const img = document.createElement("img");
     img.loading = "lazy"; img.alt = ""; img.src = cover;
-    img.onerror = () => { media.replaceChildren(fb()); };
+    img.onerror = () => { media.replaceChildren(); showPoster(); };
     media.appendChild(img);
   } else {
-    media.appendChild(fb());
+    showPoster();
   }
   el.appendChild(media);
-  /* 文字区 */
+  /* 下方: 仅补充信息(标题已在海报) */
   const info = document.createElement("div");
   if (c.type === "actor") {
-    const t = document.createElement("div"); t.className = "card-title"; t.textContent = c.name || "";
-    info.appendChild(t);
     if (c.country) { const s = document.createElement("div"); s.className = "card-sub"; s.textContent = c.country; info.appendChild(s); }
   } else {
-    const actors = (c.actors || []).map((a) => typeof a === "string" ? a : (a && a.name) || "").filter(Boolean).slice(0, 3).join(" / ");
-    const t = document.createElement("div"); t.className = "card-title"; t.textContent = c.title || c.code || "";
-    info.appendChild(t);
+    const actors = (c.actors || []).map((a) => typeof a === "string" ? a : (a && a.name) || "").filter(Boolean).slice(0, 2).join(" / ");
     const sub = [c.duration, actors].filter(Boolean).join(" · ");
     if (sub) { const s = document.createElement("div"); s.className = "card-sub"; s.textContent = sub; info.appendChild(s); }
-    if (c.code) { const cd = document.createElement("div"); cd.className = "card-code"; cd.textContent = c.code; info.appendChild(cd); }
   }
   el.appendChild(info);
   el.title = c.title || c.name || c.code || "";
