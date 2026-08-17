@@ -43,7 +43,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: "20" }
-      - name: 部署 Worker(公网实例: ALLOW_REAL_CALLS=false)
+      - name: "部署 Worker(公网实例: ALLOW_REAL_CALLS=false)"
         run: npx wrangler@latest deploy worker/wrangler.toml --var ALLOW_REAL_CALLS:false
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
