@@ -12,7 +12,7 @@
  *
  * 构建: tools/build.py 生成 whitelist.json(白名单路径) 到本目录
  */
-import whitelist from "./whitelist.json";
+import whitelist from "./whitelist.js";
 
 const API_BASE = "https://api.atzxyff.com";       // 主 API 域名(CDN 池, 可轮换)
 const DEVICE_ID = "avnight_web_visitor_001";       // 固定 device_id(签名用)
