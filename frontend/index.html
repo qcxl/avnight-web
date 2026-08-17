@@ -3,41 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AVNight 逆向展示站</title>
+<title>AVNight</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header>
-  <h1>AVNight 逆向展示站</h1>
-  <nav id="tabs">
-    <button class="tab-btn active" data-tab="docs">&#128196; API 文档</button>
-    <button class="tab-btn" data-tab="browse">&#128451; 数据浏览</button>
-    <button class="tab-btn" data-tab="console">&#127916; API 控制台</button>
-  </nav>
+<header class="topbar">
+  <span class="brand">AVNight</span>
+  <span class="brand-sub">逆向展示站 · 作品浏览</span>
 </header>
-<main>
-  <section id="tab-docs" class="tab-panel active">
-    <aside id="doc-list" class="sidebar"></aside>
-    <article id="doc-view" class="content">
-      <div class="placeholder">&#8592; 从左侧选择文档</div>
-    </article>
-  </section>
-  <section id="tab-browse" class="tab-panel">
-    <aside id="module-list" class="sidebar"></aside>
-    <article id="sample-view" class="content">
-      <div class="placeholder">&#8592; 从左侧选择模块/样本</div>
-    </article>
-  </section>
-  <section id="tab-console" class="tab-panel">
-    <aside id="api-list" class="sidebar"></aside>
-    <div class="content console-panel">
-      <div id="api-form-area">
-        <div class="placeholder">&#8592; 从左侧选择接口</div>
+
+<div class="layout">
+  <!-- 左侧主菜单 -->
+  <nav id="site-menu" class="site-menu">
+    <button class="site-item active" data-site="reverse">&#9472; 逆向展示站</button>
+    <button class="site-item" data-site="home">&#127968; 首页</button>
+    <button class="site-item" data-site="vip">&#128142; VIP</button>
+    <button class="site-item" data-site="category">&#128451; 分类</button>
+  </nav>
+
+  <main class="site-main">
+    <!-- ============ 逆向展示站(原样保留: 文档/数据浏览/API控制台) ============ -->
+    <section id="site-reverse" class="site-panel active">
+      <nav id="tabs" class="tabs">
+        <button class="tab-btn active" data-tab="docs">&#128196; API 文档</button>
+        <button class="tab-btn" data-tab="browse">&#128451; 数据浏览</button>
+        <button class="tab-btn" data-tab="console">&#127916; API 控制台</button>
+      </nav>
+      <div class="tab-body">
+        <section id="tab-docs" class="tab-panel active">
+          <aside id="doc-list" class="sidebar"></aside>
+          <article id="doc-view" class="content">
+            <div class="placeholder">&#8592; 从左侧选择文档</div>
+          </article>
+        </section>
+        <section id="tab-browse" class="tab-panel">
+          <aside id="module-list" class="sidebar"></aside>
+          <article id="sample-view" class="content">
+            <div class="placeholder">&#8592; 从左侧选择模块/样本</div>
+          </article>
+        </section>
+        <section id="tab-console" class="tab-panel">
+          <aside id="api-list" class="sidebar"></aside>
+          <div class="content console-panel">
+            <div id="api-form-area">
+              <div class="placeholder">&#8592; 从左侧选择接口</div>
+            </div>
+            <pre id="api-response" class="response-box"></pre>
+          </div>
+        </section>
       </div>
-      <pre id="api-response" class="response-box"></pre>
-    </div>
-  </section>
-</main>
+    </section>
+
+    <!-- ============ 产品站: 首页 / VIP / 分类 (子Tab 内容卡片) ============ -->
+    <section id="site-home" class="site-panel">
+      <nav id="home-sub" class="sub-tabs"></nav>
+      <div id="home-cards" class="card-grid"></div>
+    </section>
+    <section id="site-vip" class="site-panel">
+      <nav id="vip-sub" class="sub-tabs"></nav>
+      <div id="vip-cards" class="card-grid"></div>
+    </section>
+    <section id="site-category" class="site-panel">
+      <nav id="category-sub" class="sub-tabs"></nav>
+      <div id="category-cards" class="card-grid"></div>
+    </section>
+  </main>
+</div>
+
 <script src="vendor/marked.min.js"></script>
 <script src="app.js"></script>
 </body>

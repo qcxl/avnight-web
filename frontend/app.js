@@ -1,13 +1,17 @@
-/* AVNight 展示站 — 前端逻辑(三 Tab: 文档/数据浏览/控制台) */
+/* AVNight 展示站 — 前端逻辑
+   II 期: 左菜单(逆向展示站/首页/VIP/分类) + 子Tab内容卡片; 逆向展示站保留 文档/数据浏览/API控制台 */
 "use strict";
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-/* 私有 Worker 地址(真实调用). 留空 = 纯回放. 例: "https://avnight-proxy.xxx.workers.dev" */
-const CONFIG = { workerUrl: "https://avnight-proxy.157676363.workers.dev" }; // 真实调用 Worker
+/* 私有 Worker 地址(真实调用). 留空 = 纯回放 */
+const CONFIG = { workerUrl: "https://avnight-proxy.157676363.workers.dev" };
 
+/* ======================================================================
+   逆向展示站 — 文档 / 数据浏览 / API 控制台(原样保留)
+====================================================================== */
 /* ---------- Tab 切换 ---------- */
 document.querySelectorAll(".tab-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -126,20 +130,20 @@ async function loadConsole() {
 }
 
 function renderApiForm(api) {
-  const inMode = typeof api.method !== "undefined" ? "GET" : api.method;
+  const method = api.method || "GET";
   const params = (api.params || []).map((p, i) =>
     '<div class="param-row"><label>' + esc(p.name) + (p.required ? " *" : "") + "</label>" +
     '<input id="p' + i + '" placeholder="' + esc(p.example || "") + '" ' +
     (p.workerInjected ? "disabled title='Worker 注入, 前端不填'" : "") + "></div>").join("");
   $("#api-form-area").innerHTML =
-    '<div><span id="api-method" class="' + inMode + '">' + inMode + "</span>" +
+    '<div><span id="api-method" class="' + esc(method) + '">' + esc(method) + "</span>" +
     '<span id="api-path"> ' + esc(api.path) + "</span>" +
     (api.liveOnly ? '<span class="tag live">仅真实</span>' : '<span class="tag replay">回放</span>') +
-    '<span class="tag replay">模式</span></div>' +
+    '</div>' +
     params +
     '<div class="note">' + esc(api.note || "") + "</div>" +
     '<button id="api-replay-btn">▶ 回放</button> ' +
-    '<button id="api-live-btn" ' + (CONFIG.workerUrl ? "" : "disabled title='未配置私有 Worker(见 app.js CONFIG.workerUrl)'") + ">⚡ 真实调用</button>";
+    '<button id="api-live-btn" ' + (CONFIG.workerUrl ? "" : "disabled title='未配置私有 Worker'") + ">⚡ 真实调用</button>";
   $("#api-replay-btn").onclick = () => collectAnd(api, replayApi);
   $("#api-live-btn").onclick = () => collectAnd(api, callLive);
 }
@@ -153,7 +157,6 @@ function collectAnd(api, fn) {
   fn(api, args);
 }
 
-/* 回放: 读本地样本 */
 async function replayApi(api, args) {
   const box = $("#api-response");
   box.textContent = "▶ 回放 " + api.path + " " + JSON.stringify(args) + "\n";
@@ -165,39 +168,140 @@ async function replayApi(api, args) {
   }
 }
 
-/* 真实调用: 经私有 Worker 代理 */
 async function callLive(api, args) {
   const box = $("#api-response");
   box.textContent = "⚡ 真实调用 " + api.path + "\n";
-  const path = api.path.split("?")[0];
   const q = new URLSearchParams();
   (api.params || []).forEach((p) => { if (p.type === "path") return; if (args[p.name]) q.set(p.name, args[p.name]); });
   const pathFilled = (api.path.split("?")[0]).replace(/\{(\w+)\}/g, (_, n) => args[n] || "{MISSING}");
   const qs = q.toString();
   const url = CONFIG.workerUrl + "/proxy" + pathFilled + (qs ? "?" + qs : "");
-  if (url.includes("{MISSING}")) {
-    box.textContent = "❌ 缺少必填路径参数, 无法构造 URL";
-    return;
-  }
+  if (url.includes("{MISSING}")) { box.textContent = "❌ 缺少必填路径参数, 无法构造 URL"; return; }
   box.textContent += "→ " + url + "\n";
   try {
     const resp = await fetch(url);
     if (resp.status === 429) {
-      box.textContent += "\n⚠️ 429 触发服务端限流 — 已降级为回放(建议稍后再试或使用回放模式)";
-      const txt = await resp.text();
-      box.textContent += "\n" + txt;
+      box.textContent += "\n⚠️ 429 服务端限流 — 已降级为回放(建议稍后再试或使用回放模式)";
+      box.textContent += "\n" + await resp.text();
       return;
     }
     if (resp.status === 403) {
-      box.textContent += "\n⛔ 403 — Worker 未开启真实调用(需私有实例设置 ALLOW_REAL_CALLS=true)";
+      box.textContent += "\n⛔ 403 — Worker 未开启真实调用(需设置 ALLOW_REAL_CALLS=true)";
       return;
     }
     const txt = await resp.text();
-    box.textContent += "\nHTTP " + resp.status + "\n" + (txt.slice(0, 200000));
+    box.textContent += "\nHTTP " + resp.status + "\n" + txt.slice(0, 200000);
   } catch (e) {
-    box.textContent += "\n❌ 网络错误: " + e + "\n(降级建议: 使用回放模式 / 检查 CONFIG.workerUrl)";
+    box.textContent += "\n❌ 网络错误: " + e + "\n(降级建议: 使用回放模式)";
   }
 }
 
-/* 初始 */
+/* ======================================================================
+   站点菜单 + hash 路由 + 内容卡片(II 期)
+====================================================================== */
+const SITE_TABS = { home: "home-sub", vip: "vip-sub", category: "category-sub" };
+let CARDS_INDEX = null;
+
+function parseRoute() {
+  const m = location.hash.match(/^#\/(reverse|home|vip|category)(?:\/([a-z_]+))?/);
+  return { site: m ? m[1] : "reverse", tab: m ? m[2] : null };
+}
+
+function switchSite(site, tabId) {
+  document.querySelectorAll(".site-item").forEach((b) => b.classList.toggle("active", b.dataset.site === site));
+  document.querySelectorAll(".site-panel").forEach((p) => p.classList.toggle("active", p.id === "site-" + site));
+  if (site === "reverse") {
+    loadDocs();
+    if (location.hash !== "#/reverse") history.replaceState(null, "", "#/reverse");
+  } else {
+    ensureSubTabs(site, tabId);
+  }
+}
+
+document.querySelectorAll(".site-item").forEach((btn) => {
+  btn.onclick = () => {
+    const site = btn.dataset.site;
+    if (site === "reverse") history.pushState(null, "", "#/reverse");
+    else { ensureSubTabs(site, null); history.pushState(null, "", "#/" + site); }
+  };
+});
+window.addEventListener("hashchange", () => {
+  const { site, tab } = parseRoute();
+  switchSite(site, tab);
+});
+
+async function ensureSubTabs(site, tabId) {
+  const nav = $("#" + SITE_TABS[site]);
+  if (!CARDS_INDEX) {
+    try { CARDS_INDEX = await (await fetch("data/cards/index.json")).json(); }
+    catch { return; }
+  }
+  const tabs = CARDS_INDEX[site] || [];
+  const active = tabId || (tabs[0] && tabs[0].id) || "";
+  nav.innerHTML = "";
+  for (const t of tabs) {
+    const b = document.createElement("button");
+    b.className = "sub-tab" + (t.id === active ? " active" : "");
+    b.textContent = t.label + (t.low_data ? " (空)" : "");
+    b.onclick = () => history.pushState(null, "", "#/" + site + "/" + t.id);
+    nav.appendChild(b);
+  }
+  loadCards(site, active || (tabs[0] && tabs[0].id));
+}
+
+async function loadCards(site, tabId) {
+  const grid = $("#" + site + "-cards");
+  if (!tabId) return;
+  grid.innerHTML = '<div class="placeholder">加载中…</div>';
+  try {
+    const arr = await (await fetch("data/cards/" + site + "/" + tabId + ".json")).json();
+    if (!arr.length) { grid.innerHTML = '<div class="placeholder">暂无数据</div>'; return; }
+    grid.innerHTML = "";
+    arr.forEach((c) => grid.appendChild(renderCard(c)));
+  } catch (e) {
+    grid.innerHTML = '<div class="placeholder">加载失败: ' + esc(e) + "</div>";
+  }
+}
+
+function renderCard(c) {
+  const el = document.createElement("div");
+  el.className = "card" + (c.type === "actor" ? " actor" : "");
+  /* 媒体区: 封面 lazy; onerror 降级文字占位(封面为失效动态 CDN, 文字卡兜底) */
+  const media = document.createElement("div");
+  media.className = "card-media";
+  const fb = () => { const d = document.createElement("div"); d.className = "card-fallback"; d.textContent = "🖼"; return d; };
+  const cover = c.cover || c.thumb || "";
+  if (cover) {
+    const img = document.createElement("img");
+    img.loading = "lazy"; img.alt = ""; img.src = cover;
+    img.onerror = () => { media.replaceChildren(fb()); };
+    media.appendChild(img);
+  } else {
+    media.appendChild(fb());
+  }
+  el.appendChild(media);
+  /* 文字区 */
+  const info = document.createElement("div");
+  if (c.type === "actor") {
+    const t = document.createElement("div"); t.className = "card-title"; t.textContent = c.name || "";
+    info.appendChild(t);
+    if (c.country) { const s = document.createElement("div"); s.className = "card-sub"; s.textContent = c.country; info.appendChild(s); }
+  } else {
+    const actors = (c.actors || []).map((a) => typeof a === "string" ? a : (a && a.name) || "").filter(Boolean).slice(0, 3).join(" / ");
+    const t = document.createElement("div"); t.className = "card-title"; t.textContent = c.title || c.code || "";
+    info.appendChild(t);
+    const sub = [c.duration, actors].filter(Boolean).join(" · ");
+    if (sub) { const s = document.createElement("div"); s.className = "card-sub"; s.textContent = sub; info.appendChild(s); }
+    if (c.code) { const cd = document.createElement("div"); cd.className = "card-code"; cd.textContent = c.code; info.appendChild(cd); }
+  }
+  el.appendChild(info);
+  el.title = c.title || c.name || c.code || "";
+  return el;
+}
+
+/* ======================================================================
+   初始
+====================================================================== */
 loadDocs();
+const _r = parseRoute();
+switchSite(_r.site, _r.tab);

@@ -61,3 +61,65 @@ class TestOutputs(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+from build import _norm_video, _norm_actor, _collect_cards, SITE_MENUS  # noqa: E402
+
+
+class TestCards(unittest.TestCase):
+    def test_norm_video(self):
+        c = _norm_video({"code": "ABC-123", "title": "片名", "cover64": "https://x/y.jpg",
+                         "thumb64": "https://x/t.jpg", "duration": "02:11:22",
+                         "actors": [{"name": "某优"}], "genres": ["剧情"]})
+        self.assertEqual(c["type"], "video")
+        self.assertEqual(c["code"], "ABC-123")
+        self.assertEqual(c["title"], "片名")
+        self.assertTrue(c["cover"].startswith("https://"))
+        self.assertEqual(c["thumb"], "https://x/t.jpg")
+        self.assertEqual(c["duration"], "02:11:22")
+        self.assertEqual(c["actors"][0]["name"], "某优")
+
+    def test_norm_video_no_code_skipped(self):
+        self.assertIsNone(_norm_video({"title": "", "cover64": "https://x/y.jpg"}))
+
+    def test_norm_actor(self):
+        c = _norm_actor({"name": "Umi", "cover64": "https://x/a.jpg", "country": "other"})
+        self.assertEqual(c["type"], "actor")
+        self.assertEqual(c["name"], "Umi")
+        self.assertTrue(c["cover"].startswith("https://"))
+
+    def test_collect_dedup(self):
+        """嵌套结构提取 + 同 code 去重(子Tab内)"""
+        j = {
+            "data": {
+                "ace": [
+                    {"code": "X-1", "title": "A", "cover64": "https://x/1.jpg"},
+                    {"code": "X-1", "title": "A 重复", "cover64": "https://x/1.jpg"},  # 同 code → 去重
+                    {"code": "X-2", "title": "B", "cover64": "https://x/2.jpg"},
+                ],
+                "other": [{"name": "only_name", "cover64": "https://x/n.jpg"}],  # actor
+            }
+        }
+        cards, seen = [], set()
+        _collect_cards(j, cards, seen)
+        self.assertEqual(len(cards), 3, "X-1/X-2 video + 1 actor")
+        keys = [(c["type"], c.get("code") or c.get("key")) for c in cards]
+        codes = [k for k in keys if k[0] == "video"]
+        self.assertEqual(len(codes), len(set(codes)), "同 code 不重复")
+
+    def test_cards_output(self):
+        """生成的 cards 产物存在且字段完整"""
+        ci = ROOT / "frontend" / "data" / "cards" / "index.json"
+        self.assertTrue(ci.exists(), "先运行 tools/build.py")
+        idx = json.loads(ci.read_text(encoding="utf-8"))
+        self.assertIn("home", idx)
+        self.assertTrue(idx["home"], "home 至少一个子Tab")
+        tab = json.loads((ROOT / "frontend" / "data" / "cards" / "home" / (idx["home"][0]["id"] + ".json")).read_text(encoding="utf-8"))
+        self.assertTrue(tab)
+        self.assertIn("type", tab[0])
+        self.assertTrue(any(k in tab[0] for k in ("code", "name")))
+
+    def test_menus_cover_all_sites(self):
+        for site, tabs in SITE_MENUS.items():
+            self.assertTrue(tabs, f"{site} 有子Tab")
+            self.assertTrue(all(t.get("label") and t.get("samples") for t in tabs))
