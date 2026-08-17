@@ -18,9 +18,13 @@ jobs:
   # 前端产物(frontend/)已作为数据提交入库, CI 直接发布, 无需 avnight_api
   deploy-pages:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: '\${{ steps.deployment.outputs.page_url }}'
     steps:
       - uses: actions/checkout@v4
       - name: 上传前端产物
