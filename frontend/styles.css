@@ -321,8 +321,8 @@ img { border: 0 !important; outline: 0 !important; box-shadow: none !important; 
 .dd-body { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 0 16px 46px; min-height: 0; width: 100%; max-width: 1400px; margin: 0 auto; }
 /* 播放器 高420(占满宽) */
 .dd-player { position: relative; height: 420px; width: 100%; flex: none; background: #000; border-radius: 12px; overflow: hidden; }
-.dd-player video, .dd-player img { border: 0 !important; outline: 0 !important; box-shadow: none !important; }
-.dd-player video { background: #000 !important; }
+.dd-player video, .dd-player img, video, img { border: 0 !important; outline: 0 !important; box-shadow: none !important; }
+#dd-video, video { background: #000 !important; }
 #dd-video { width: 100%; height: 100%; object-fit: contain; background: #000; }
 .dd-playbtn { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
   background: rgba(0,0,0,.55); color: #fff; font-size: 22px; letter-spacing: 1px; cursor: pointer; z-index: 3; transition: background .2s; }
