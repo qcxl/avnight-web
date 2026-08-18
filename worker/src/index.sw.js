@@ -18,6 +18,23 @@ function json(body, status) {
   return new Response(JSON.stringify(body), { status: status || 200,
     headers: { "content-type":"application/json; charset=utf-8", "access-control-allow-origin":"*" } });
 }
+// 播放代理: 转发 m3u8/分片/密钥(跨域 CORS), host 白名单防 SSRF
+const PLAY_HOSTS = ["api.atzxyff.com", "cel.hscammq.com"];
+const PLAY_SUFFIX = ["atzxyff.com", "hscammq.com"];
+async function playProxy(u, req, method) {
+  if (!u || !/^https?:\/\//i.test(u)) return json({ ok:false, error:"bad url" }, 400);
+  const host = new URL(u).host.toLowerCase();
+  if (!PLAY_SUFFIX.some((sfx) => host === sfx || host.endsWith("." + sfx)))
+    return json({ ok:false, error:"host not allowed" }, 403);
+  const headers = new Headers(req ? req.headers : undefined);
+  headers.set("user-agent", "okhttp/3.12.10");
+  const resp = await fetch(u, { method: method || "GET", headers,
+    body: method && method !== "GET" ? await req.text() : undefined });
+  const out = new Response(resp.body, { status: resp.status,
+    headers: { "content-type": resp.headers.get("content-type") || "application/octet-stream",
+      "access-control-allow-origin": "*", "cache-control":"no-store" } });
+  return out;
+}
 function redact(o) {
   if (Array.isArray(o)) return o.map(redact);
   if (o && typeof o === "object") { const r = {};
@@ -64,6 +81,7 @@ async function handle(req) {
   if (req.method === "OPTIONS")
     return new Response(null, { status: 204, headers: { "access-control-allow-origin":"*", "access-control-allow-methods":"GET,POST,OPTIONS", "access-control-allow-headers":"content-type,authorization" } });
   if (path === "/proxy/token") { try { await getToken(); return json({ ok:true, token:"__REDACTED__" }); } catch(e){ return json({ok:false,error:String(e)},500); } }
+  if (path === "/proxy/play") return playProxy(url.searchParams.get("u") || "", req, req.method);
   if (path.startsWith("/proxy/v3/") && req.method === "GET") return proxy(path.slice("/proxy".length), req);
   return json({ ok:false, error:"not found" }, 404);
 }

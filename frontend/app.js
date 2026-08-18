@@ -226,6 +226,8 @@ document.querySelectorAll(".site-item").forEach((btn) => {
   };
 });
 window.addEventListener("hashchange", () => {
+  const m = location.hash.match(/^#\/dub\/([^/]+)(?:\/([^/]+))?/);
+  if (m) { openDubbingDetail(decodeURIComponent(m[1]), m[2] ? decodeURIComponent(m[2]) : null); return; }
   const { site, tab } = parseRoute();
   switchSite(site, tab);
 });
@@ -356,14 +358,16 @@ function hmedia(v) {
   if (v.duration != null) m.appendChild(durBadge(v.duration));
   el.appendChild(m);
   const t = document.createElement("div"); t.className = "hm-title"; t.textContent = v.title || v.code || ""; el.appendChild(t);
+  el.onclick = () => openDubbingDetail(v.code, v.code);
   return el;
 }
-function collectionVideo(v) {
+function collectionVideo(v, colCode) {
   const el = document.createElement("div"); el.className = "ci-video"; el.title = v.title || "";
   const m = dubMedia(v.cover64, "cv", v.title || v.code || "");
   if (v.duration != null) m.appendChild(durBadge(v.duration));
   el.appendChild(m);
   const t = document.createElement("div"); t.className = "cv-title"; t.textContent = v.title || v.code || ""; el.appendChild(t);
+  el.onclick = () => openDubbingDetail(colCode || v.code, v.code);
   return el;
 }
 function collectionItem(it) {
@@ -383,8 +387,10 @@ function collectionItem(it) {
   const ti = document.createElement("div"); ti.className = "ci-title"; ti.textContent = it.title || "";
   info.appendChild(ty); info.appendChild(ti); head.appendChild(info); el.appendChild(head);
   const vids = document.createElement("div"); vids.className = "ci-videos";
-  (it.videos || []).forEach((v) => vids.appendChild(collectionVideo(v)));
-  el.appendChild(vids); return el;
+  (it.videos || []).forEach((v) => vids.appendChild(collectionVideo(v, it.collection_sid || it.sid)));
+  el.appendChild(vids);
+  el.onclick = (ev) => { if (ev.target.closest(".ci-video")) return; openDubbingDetail(it.collection_sid || it.sid, (it.videos && it.videos[0] && it.videos[0].code) || null); };
+  return el;
 }
 const DUB_CACHE = {};   // 模块级缓存: type -> {items:[], next, done} (切Tab不重载)
 let DUB_SAMPLES = null;  // 本地多页样本缓存
@@ -551,3 +557,135 @@ function renderCard(c) {
 loadDocs();
 const _r = parseRoute();
 switchSite(_r.site, _r.tab);
+
+/* ================= 视频详情页 (openDubbingDetail) ================= */
+let DD = { col: null, videos: [], cur: null, hls: null };
+
+function $D(id) { return document.getElementById(id); }
+async function videoCryptDecrypt(tsMs, cipherB64) {
+  // tsMs = 响应头 x-avnight-time(秒)*1000; 日期 = GMT+8 yyyyMMdd-HHmmss
+  const d = new Date(tsMs + 8 * 3600 * 1000);
+  const pad = (x) => String(x).padStart(2, "0");
+  const ds = "" + d.getUTCFullYear() + pad(d.getUTCMonth() + 1) + pad(d.getUTCDate()) + "-" +
+             pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + pad(d.getUTCSeconds());
+  const hex = md5("a@v*9$QAQ" + ds);
+  const keyBytes = new Uint8Array(32);
+  for (let i = 0; i < 32; i++) keyBytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+  const iv = new TextEncoder().encode(ds + "#");
+  const data = Uint8Array.from(atob(cipherB64), (c) => c.charCodeAt(0));
+  const k = await crypto.subtle.importKey("raw", keyBytes, { name: "AES-CBC" }, false, ["decrypt"]);
+  const plain = await crypto.subtle.decrypt({ name: "AES-CBC", iv }, k, data);
+  return new TextDecoder().decode(plain);
+}
+function playProxyUrl(u) { return CONFIG.workerUrl + "/proxy/play?u=" + encodeURIComponent(u); }
+function toFetch(url, opts, ms) {
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), ms || 8000);
+  return fetch(url, Object.assign({ signal: ctl.signal }, opts || {})).finally(() => clearTimeout(t));
+}
+
+function openDubbingDetail(colCode, initVcode) {
+  $D("dub-detail").style.display = "flex";
+  if (location.hash !== "#/dub/" + encodeURIComponent(colCode))
+    history.pushState(null, "", "#/dub/" + encodeURIComponent(colCode));
+  DD.col = colCode; DD.cur = initVcode || null;
+  $D("dd-side").innerHTML = '<div style="color:var(--text-dim);padding:20px;font-size:13px">加载中…</div>';
+  $D("dd-video").removeAttribute("src"); if (DD.hls) { try { DD.hls.destroy(); } catch (_) {} DD.hls = null; }
+  $D("dd-playbtn").style.display = "flex";
+  $D("dd-pstat").textContent = "";
+  loadDdInfo(colCode);
+}
+
+async function loadDdInfo(colCode) {
+  let videos = [];
+  try {
+    // 优先 Worker 实时; 失败回退本地样本
+    if (CONFIG.workerUrl) {
+      const r = await toFetch(CONFIG.workerUrl + "/proxy/v3/chinese_dubbing/collections/" + encodeURIComponent(colCode) + "/info", { headers: { "accept": "application/json" } });
+      if (r.ok) { const j = await r.json(); videos = j.videos || []; }
+    }
+  } catch (_) {}
+  if (!videos.length) {
+    const j = await (await fetch("data/home/chineseDubbingCodeInfo.json")).json().catch(() => ({ videos: [] }));
+    videos = j.videos || [];
+  }
+  DD.videos = videos;
+  if (!DD.cur && videos[0]) DD.cur = videos[0].code;
+  renderDdSide(videos);
+}
+
+function renderDdSide(videos) {
+  const box = $D("dd-side"); box.innerHTML = "";
+  const hasActive = videos.some((v) => v.code === DD.cur);
+  videos.forEach((v, i) => {
+    const el = document.createElement("div"); el.className = "dd-item" + ((v.code === DD.cur || (!hasActive && i === 0)) ? " active" : "");
+    const md = document.createElement("div"); md.className = "dd-item-media";
+    const fb = document.createElement("div"); fb.className = "dd-fb"; fb.style.display = "none"; fb.textContent = v.title || "";
+    md.appendChild(fb);
+    if (v.cover64) { const img = document.createElement("img"); img.alt = ""; img.style.display = "none";
+      img.onload = () => { img.style.display = "block"; fb.style.display = "none"; };
+      img.onerror = () => { try { img.parentNode.removeChild(img); } catch (_) {} fb.style.display = "flex"; };
+      md.appendChild(img); setCover(img, fb, v.cover64); }
+    else fb.style.display = "flex";
+    if (v.duration != null) md.appendChild(durBadge(v.duration));
+    el.appendChild(md);
+    const ti = document.createElement("div"); ti.className = "dd-item-title"; ti.textContent = v.title || ""; el.appendChild(ti);
+    el.onclick = () => { DD.cur = v.code; renderDdSide(videos); promptPlay(v.code); };
+    box.appendChild(el);
+  });
+}
+
+function promptPlay(vcode) {
+  $D("dd-playbtn").style.display = "flex";
+  $D("dd-pstat").textContent = "";
+  if ($D("dd-video").dataset.vcode === vcode && $D("dd-video").src) {
+    // 已加载该视频, 用户再点播放
+    $D("dd-video").play().catch(() => {});
+    return;
+  }
+  $D("dd-video").dataset.vcode = vcode;
+  if (DD.hls) { try { DD.hls.destroy(); } catch (_) {} DD.hls = null; }
+}
+
+async function onDdPlay() {
+  const vcode = DD.cur; const video = $D("dd-video");
+  if (!vcode) { $D("dd-pstat").textContent = "无视频可播放"; return; }
+  $D("dd-playbtn").style.display = "none";
+  $D("dd-pstat").textContent = "正在获取播放地址…";
+  try {
+    const r = await toFetch(CONFIG.workerUrl + "/proxy/v3/video/" + encodeURIComponent(vcode) + "/info?cdn=c", { headers: { "accept": "application/json" } });
+    if (!r.ok) throw new Error("info HTTP " + r.status);
+    const ts = parseInt(r.headers.get("x-avnight-time"), 10);
+    const plain = await videoCryptDecrypt(ts * 1000, await r.text());
+    const info = JSON.parse(plain); const vd = info.video || {};
+    const m3u8 = (vd.sources && (vd.sources["240"] || vd.sources["480"])) || "";
+    if (!m3u8) { $D("dd-pstat").textContent = "未获取到播放地址"; return; }
+    $D("dd-pstat").textContent = "播放地址已获取, 正在加载…";
+    // 经 Worker 取 m3u8 并重写分片/密钥 URL 为 Worker 代理(跨域 CORS)
+    const m3u8Text = await (await toFetch(playProxyUrl(m3u8))).text();
+    const rewritten = m3u8Text.replace(/(https?:\/\/[^\s"'<>]+)/g, (m) => playProxyUrl(m));
+    const blobUrl = URL.createObjectURL(new Blob([rewritten], { type: "application/vnd.apple.mpegurl" }));
+    if (window.Hls && Hls.isSupported()) {
+      const hls = new Hls({ maxBufferLength: 60 }); DD.hls = hls;
+      hls.loadSource(blobUrl); hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => { $D("dd-pstat").textContent = ""; video.play().catch(() => $D("dd-pstat").textContent = "请点击播放器播放"); });
+      hls.on(Hls.Events.ERROR, (e, data) => { if (data && data.fatal) $D("dd-pstat").textContent = "播放出错: " + (data.type || ""); });
+    } else {
+      video.src = blobUrl; $D("dd-pstat").textContent = "";
+      video.play().catch(() => $D("dd-pstat").textContent = "请点击播放器播放");
+    }
+  } catch (e) { $D("dd-playbtn").style.display = "flex"; $D("dd-pstat").textContent = "播放失败: " + String(e).slice(0, 60); }
+}
+
+function closeDubbingDetail() {
+  $D("dub-detail").style.display = "none";
+  if (location.hash.startsWith("#/dub/")) { const h = location.hash.replace(/^#\/dub\/[^/]*/, "#/home/ai_dubbing"); history.replaceState(null, "", h); switchSite("home", "ai_dubbing"); }
+  if (DD.hls) { try { DD.hls.destroy(); } catch (_) {} DD.hls = null; }
+  const v = $D("dd-video"); v.pause(); v.removeAttribute("src");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const back = $D("dd-back"); if (back) back.onclick = closeDubbingDetail;
+  const pb = $D("dd-playbtn"); if (pb) pb.onclick = onDdPlay;
+  const m = location.hash.match(/^#\/dub\/([^/]+)/);
+  if (m) openDubbingDetail(decodeURIComponent(m[1]), null);
+});
