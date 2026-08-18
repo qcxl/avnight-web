@@ -354,9 +354,13 @@ function collectionItem(it) {
   const el = document.createElement("div"); el.className = "collection-item";
   const head = document.createElement("div"); head.className = "ci-head";
   const m = document.createElement("div"); m.className = "ci-media";
-  const fb = document.createElement("div"); fb.className = "ci-fb"; fb.style.display = "none"; m.appendChild(fb);
-  if (it.cover64) { const img = document.createElement("img"); img.alt = ""; m.appendChild(img); setCover(img, fb, it.cover64); }
-  else fb.style.display = "flex";
+  const fb = document.createElement("div"); fb.className = "ci-fb"; fb.style.display = "flex"; m.appendChild(fb);  // 纯深色圆角占位
+  if (it.cover64) {
+    const img = document.createElement("img"); img.alt = ""; img.style.display = "none";  // 加载中不显示(避免白框)
+    img.onload = () => { img.style.display = "block"; fb.style.display = "none"; };
+    img.onerror = () => { try { img.parentNode.removeChild(img); } catch (_) {} };
+    m.appendChild(img); setCover(img, fb, it.cover64);
+  }
   head.appendChild(m);
   const info = document.createElement("div"); info.className = "ci-info";
   const ty = document.createElement("div"); ty.className = "ci-type"; ty.textContent = it.collection_type || "";
@@ -398,6 +402,10 @@ async function loadAiDubbing(grid) {
 
     function showEnd(text, cls) { endBox.textContent = text || ""; endBox.className = "ai-end" + (cls ? " " + cls : ""); }
     function renderAppendData(arr) { arr.forEach((it) => listBox.appendChild(collectionItem(it))); }
+    // 列表容器顶部相对 grid 滚动内容顶的偏移(恒定值, 供计算“从该tab列表内滚了多少”)
+    function listOffset(el) {
+      return el.getBoundingClientRect().top - grid.getBoundingClientRect().top + grid.scrollTop;
+    }
 
     TYPES.forEach((tp) => {
       const b = document.createElement("button"); b.className = "dub-tab" + (tp.k === curType ? " active" : "");
@@ -446,20 +454,21 @@ async function loadAiDubbing(grid) {
     }
 
     function selectType(type) {
-      // 切走前记住当前滚动位置
+      // 切走前记住“从当前tab列表顶部滚了多少”(相对该tab内部, 而非外部整体)
       if (curType && curType !== type && DUB_CACHE[curType] && DUB_CACHE[curType].el) {
-        DUB_CACHE[curType].scrollTop = grid.scrollTop;
+        const el = DUB_CACHE[curType].el;
+        DUB_CACHE[curType].offset = Math.max(0, grid.scrollTop - listOffset(el));
       }
       curType = type;
       [...tabs.querySelectorAll(".dub-tab")].forEach((x) => x.classList.toggle("active", x.dataset.k === type));
       let c = DUB_CACHE[type];
-      if (!c) c = DUB_CACHE[type] = { items: [], next: 0, done: false, fails: 0, el: null, scrollTop: 0 };
+      if (!c) c = DUB_CACHE[type] = { items: [], next: 0, done: false, fails: 0, el: null, offset: 0 };
       // 每个 tab 独立列表容器, 首次创建后保留(切回不重渲染/不重抓)
       if (!c.el) { c.el = document.createElement("div"); c.el.className = "collection-list"; wrap.appendChild(c.el); }
       Object.keys(DUB_CACHE).forEach((k) => { if (DUB_CACHE[k].el) DUB_CACHE[k].el.style.display = k === type ? "" : "none"; });
       listBox = c.el;
       wrap.appendChild(endBox);               // 底部状态保持在列表后面
-      grid.scrollTop = c.scrollTop || 0;      // 恢复该 tab 记忆的滑动位置
+      grid.scrollTop = (c.offset || 0) + listOffset(c.el);   // 恢复到该tab内部对应位置
       if (!c.items.length && !c.done) { showEnd("加载中, 请稍后…"); loadMore(type); }   // 首次
       else if (c.done) showEnd("到底了, 没有更多AI中配", "done");
       else showEnd("下拉加载更多…", "more");
