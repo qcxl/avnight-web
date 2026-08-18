@@ -327,8 +327,7 @@ async function setCover(img, fb, rawUrl) {
 /* ===== AI中配 Tab 专门渲染(chinese_dubbing) ===== */
 function dubMedia(url, fbCls, title) {
   const box = document.createElement("div"); box.className = fbCls + "-img";
-  const fb = document.createElement("div"); fb.className = fbCls + "-fb"; fb.style.display = "flex";  // 默认深色圆角占位
-  const sp = document.createElement("span"); sp.textContent = title || ""; fb.appendChild(sp);
+  const fb = document.createElement("div"); fb.className = fbCls + "-fb"; fb.style.display = "flex";  // 纯深色圆角占位(不带文字)
   box.appendChild(fb);
   if (url) {
     const img = document.createElement("img"); img.alt = ""; img.style.display = "none";  // 加载中不显示(避免白框)
@@ -392,9 +391,9 @@ async function loadAiDubbing(grid) {
     });
     const TYPES = [{ k: "new", l: "最新" }, { k: "hot", l: "最热" }, { k: "recommend", l: "最推" }];
     const tabs = document.createElement("div"); tabs.className = "dub-tabs";
-    const listBox = document.createElement("div"); listBox.className = "collection-list";
     const endBox = document.createElement("div"); endBox.className = "ai-end";   // 底部提示(加载中/加载更多/到底了)
     let curType = "new";
+    let listBox = null;   // 当前 tab 的列表容器(每个 tab 独立, 由 selectType 创建并保留=不重渲染)
 
 
     function showEnd(text, cls) { endBox.textContent = text || ""; endBox.className = "ai-end" + (cls ? " " + cls : ""); }
@@ -447,18 +446,27 @@ async function loadAiDubbing(grid) {
     }
 
     function selectType(type) {
+      // 切走前记住当前滚动位置
+      if (curType && curType !== type && DUB_CACHE[curType] && DUB_CACHE[curType].el) {
+        DUB_CACHE[curType].scrollTop = grid.scrollTop;
+      }
       curType = type;
       [...tabs.querySelectorAll(".dub-tab")].forEach((x) => x.classList.toggle("active", x.dataset.k === type));
-      if (!DUB_CACHE[type]) DUB_CACHE[type] = { items: [], next: 0, done: false, fails: 0 };
-      const c = DUB_CACHE[type];
-      listBox.innerHTML = "";
-      renderAppendData(c.items);          // 有缓存直接渲染, 不重新 fetch
-      if (c.items.length) { if (!c.done) loadMore(type); }
-      else { showEnd("加载中, 请稍后…"); loadMore(type); }  // 首次主动拉第一页
+      let c = DUB_CACHE[type];
+      if (!c) c = DUB_CACHE[type] = { items: [], next: 0, done: false, fails: 0, el: null, scrollTop: 0 };
+      // 每个 tab 独立列表容器, 首次创建后保留(切回不重渲染/不重抓)
+      if (!c.el) { c.el = document.createElement("div"); c.el.className = "collection-list"; wrap.appendChild(c.el); }
+      Object.keys(DUB_CACHE).forEach((k) => { if (DUB_CACHE[k].el) DUB_CACHE[k].el.style.display = k === type ? "" : "none"; });
+      listBox = c.el;
+      wrap.appendChild(endBox);               // 底部状态保持在列表后面
+      grid.scrollTop = c.scrollTop || 0;      // 恢复该 tab 记忆的滑动位置
+      if (!c.items.length && !c.done) { showEnd("加载中, 请稍后…"); loadMore(type); }   // 首次
+      else if (c.done) showEnd("到底了, 没有更多AI中配", "done");
+      else showEnd("下拉加载更多…", "more");
     }
 
-    wrap.appendChild(tabs); wrap.appendChild(listBox);
-    endBox.textContent = ""; wrap.appendChild(endBox);
+    wrap.appendChild(tabs);
+    endBox.textContent = "";
     grid.innerHTML = ""; grid.appendChild(wrap);
     selectType("new");
 

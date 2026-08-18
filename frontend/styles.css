@@ -299,7 +299,7 @@ button { font-family: inherit; }
 .ai-end.err { color: var(--red); }
 .ai-end.more { min-height: 60px; }
 
-/* 全局去除图片加载中的默认白色边框 */
-img { border: 0; outline: 0; }
+/* 全局去除图片加载中的默认白色边框(强制) */
+img { border: 0 !important; outline: 0 !important; box-shadow: none !important; }
 .card-media img, .hmedia-card .hm-img img, .ci-media img, .ci-video .cv-img img {
-  border: 0; outline: 0; border-radius: 0; background: #0c0e13; }
+  border: 0 !important; outline: 0 !important; box-shadow: none !important; border-radius: 0; background: #0c0e13; }
