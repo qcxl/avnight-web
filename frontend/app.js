@@ -568,9 +568,8 @@ async function videoCryptDecrypt(tsMs, cipherB64) {
   const pad = (x) => String(x).padStart(2, "0");
   const ds = "" + d.getUTCFullYear() + pad(d.getUTCMonth() + 1) + pad(d.getUTCDate()) + "-" +
              pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + pad(d.getUTCSeconds());
-  const hex = md5("a@v*9$QAQ" + ds);
-  const keyBytes = new Uint8Array(32);
-  for (let i = 0; i < 32; i++) keyBytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+  const hex = md5("a@v*9$QAQ" + ds);            // 32 个 hex 字符
+  const keyBytes = new TextEncoder().encode(hex);  // key = hex 字符串的 ASCII 字节(32B), 非 hex→2byte
   const iv = new TextEncoder().encode(ds + "#");
   const data = Uint8Array.from(atob(cipherB64), (c) => c.charCodeAt(0));
   const k = await crypto.subtle.importKey("raw", keyBytes, { name: "AES-CBC" }, false, ["decrypt"]);
@@ -615,9 +614,11 @@ function renderDdSide(videos) {
   const box = $D("dd-side"); box.innerHTML = "";
   const hasActive = videos.some((v) => v.code === DD.cur);
   videos.forEach((v, i) => {
-    const el = document.createElement("div"); el.className = "dd-item" + ((v.code === DD.cur || (!hasActive && i === 0)) ? " active" : "");
-    const md = document.createElement("div"); md.className = "dd-item-media";
-    const fb = document.createElement("div"); fb.className = "dd-fb"; fb.style.display = "none"; fb.textContent = v.title || "";
+    // 用 AI中配 collection-item 图文样式: 左图(88x60) + 右侧标题, 下方进度? 简化为左图右文卡
+    const el = document.createElement("div"); el.className = "dd-item collection-item" + ((v.code === DD.cur || (!hasActive && i === 0)) ? " active" : "");
+    const head = document.createElement("div"); head.className = "ci-head";
+    const md = document.createElement("div"); md.className = "ci-media";
+    const fb = document.createElement("div"); fb.className = "ci-fb"; fb.style.display = "none";
     md.appendChild(fb);
     if (v.cover64) { const img = document.createElement("img"); img.alt = ""; img.style.display = "none";
       img.onload = () => { img.style.display = "block"; fb.style.display = "none"; };
@@ -625,8 +626,11 @@ function renderDdSide(videos) {
       md.appendChild(img); setCover(img, fb, v.cover64); }
     else fb.style.display = "flex";
     if (v.duration != null) md.appendChild(durBadge(v.duration));
-    el.appendChild(md);
-    const ti = document.createElement("div"); ti.className = "dd-item-title"; ti.textContent = v.title || ""; el.appendChild(ti);
+    head.appendChild(md);
+    const info = document.createElement("div"); info.className = "ci-info";
+    const ty = document.createElement("div"); ty.className = "ci-type"; ty.textContent = v.code || "";
+    const ti = document.createElement("div"); ti.className = "ci-title"; ti.textContent = v.title || "";
+    info.appendChild(ty); info.appendChild(ti); head.appendChild(info); el.appendChild(head);
     el.onclick = () => { DD.cur = v.code; renderDdSide(videos); promptPlay(v.code); };
     box.appendChild(el);
   });
