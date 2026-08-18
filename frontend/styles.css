@@ -256,7 +256,9 @@ button { font-family: inherit; }
 .hero-gap { height: 14px; }
 
 /* 最新/最热/最推 三Tab */
-.dub-tabs { display: flex; gap: 10px; padding: 20px 20px 6px; border-top: 1px solid var(--border); align-items: center; }
+.dub-tabs { position: sticky; top: 0; z-index: 40; display: flex; gap: 10px;
+  padding: 16px 20px 10px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  align-items: center; background: rgba(10,12,16,0.97); backdrop-filter: blur(6px); }
 .dub-tabs-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-right: 4px; }
 .dub-tab { padding: 8px 26px; border: 1px solid var(--border-strong); border-radius: 22px; background: transparent;
   color: var(--text-dim); cursor: pointer; font-size: 14.5px; font-weight: 500; transition: all .15s; font-family: var(--font-body); }
@@ -267,7 +269,7 @@ button { font-family: inherit; }
 .collection-list { display: flex; flex-direction: column; gap: 22px; padding: 14px 20px 10px; }
 .collection-item { background: var(--bg-elev1); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
 .ci-head { display: flex; gap: 14px; margin-bottom: 12px; }
-.ci-media { flex: none; width: 120px; height: 84px; background: #0c0e13; border-radius: 8px; overflow: hidden; position: relative; }
+.ci-media { flex: none; width: 138px; height: 184px; background: #0c0e13; border-radius: 8px; overflow: hidden; position: relative; }
 .ci-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .ci-media .ci-fb { position: absolute; inset: 0; background: linear-gradient(160deg,#232b3f,#0c0e13); }
 .ci-info { display: flex; flex-direction: column; justify-content: center; gap: 8px; min-width: 0; }
@@ -296,3 +298,8 @@ button { font-family: inherit; }
 .ai-end.done { color: var(--accent); }
 .ai-end.err { color: var(--red); }
 .ai-end.more { min-height: 60px; }
+
+/* 全局去除图片加载中的默认白色边框 */
+img { border: 0; outline: 0; }
+.card-media img, .hmedia-card .hm-img img, .ci-media img, .ci-video .cv-img img {
+  border: 0; outline: 0; border-radius: 0; background: #0c0e13; }

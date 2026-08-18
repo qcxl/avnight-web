@@ -397,16 +397,17 @@ async function loadAiDubbing(grid) {
     });
 
     async function fetchPage(type, next) {
-      // 本地多页样本分页(可靠, 离线可用; 不依赖 Worker 鉴权)
+      // 本地多页样本分页. 游标语义与服务端一致: 传入 next(0 表示第一页),
+      // 返回 { data, next }: next 为下一页游标, next === null 表示没有更多(到底).
       if (!DUB_SAMPLES) {
         try { DUB_SAMPLES = await (await fetch("data/home/dub_collections.json")).json(); } catch (_) { DUB_SAMPLES = {}; }
       }
       const pages = DUB_SAMPLES[type] || [];
-      const idx = (next || 0) / 30;
+      const idx = (next || 0) / 30;          // 以 next 为游标定位页
       const data = pages[idx] || [];
-      if (!data.length) return { data: [], next: 0 };
+      if (!data.length) return { data: [], next: null };   // 无下一页
       const hasMore = !!((pages[idx + 1] || []).length);
-      return { data, next: hasMore ? (idx + 1) * 30 : 0 };
+      return { data, next: hasMore ? (idx + 1) * 30 : null };  // null = 到底
     }
 
     async function loadMore(type) {
@@ -450,11 +451,15 @@ async function loadAiDubbing(grid) {
     grid.innerHTML = ""; grid.appendChild(wrap);
     selectType("new");
 
-    // 滚动到底自动加载分页
+    // 滚动到底自动加载分页: IntersectionObserver + window scroll 距底检测双保险
     const io = new IntersectionObserver((ents) => {
       if (ents.some((e) => e.isIntersecting)) { const c = DUB_CACHE[curType]; if (c && !c.done && !c.loading) loadMore(curType); }
     });
     if (endBox) io.observe(endBox);
+    grid.addEventListener("scroll", () => {
+      const c = DUB_CACHE[curType]; if (!c || c.done || c.loading) return;
+      if (grid.scrollTop + grid.clientHeight >= grid.scrollHeight - 400) loadMore(curType);
+    });
   } catch (e) { grid.innerHTML = '<div class="placeholder">加载失败: ' + esc(e) + '</div>'; }
 }
 
