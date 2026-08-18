@@ -303,6 +303,10 @@ async function coverBlob(rawUrl) {
           const bin = atob(t + pad);
           const bytes = new Uint8Array(bin.length);
           for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+          // 校验是有效图片(魔数), 否则当失败处理(避免无效 blob → 白/破图占位)
+          const img = (bytes[0] === 0xff && bytes[1] === 0xd8) || (bytes[0] === 0x89 && bytes[1] === 0x50) ||
+                      (bytes[0] === 0x52 && bytes[1] === 0x49) || (bytes[0] === 0x47 && bytes[1] === 0x49);
+          if (!img) continue;
           return new Blob([bytes], { type: "image/webp" });
         } catch (_) {}
       }
@@ -313,19 +317,26 @@ async function coverBlob(rawUrl) {
 async function setCover(img, fb, rawUrl) {
   try {
     const blob = await coverBlob(rawUrl);
-    if (blob) { img.src = URL.createObjectURL(blob); img.style.display = "block"; }
-    else if (fb) fb.style.display = "flex";
-  } catch (_) { if (fb) fb.style.display = "flex"; }
+    if (blob && blob.size > 0) { img.src = URL.createObjectURL(blob); img.style.display = "block"; return; }
+  } catch (_) {}
+  // 失败: 移除残留 img(否则浏览器渲染默认白/破图占位), 只留深色圆角占位(fb)
+  if (img && img.parentNode) img.parentNode.removeChild(img);
+  if (fb) fb.style.display = "flex";
 }
 
 /* ===== AI中配 Tab 专门渲染(chinese_dubbing) ===== */
 function dubMedia(url, fbCls, title) {
   const box = document.createElement("div"); box.className = fbCls + "-img";
-  const fb = document.createElement("div"); fb.className = fbCls + "-fb"; fb.style.display = "none";
+  const fb = document.createElement("div"); fb.className = fbCls + "-fb"; fb.style.display = "flex";  // 默认深色圆角占位
   const sp = document.createElement("span"); sp.textContent = title || ""; fb.appendChild(sp);
   box.appendChild(fb);
-  if (url) { const img = document.createElement("img"); img.alt = ""; box.appendChild(img); setCover(img, fb, url); }
-  else fb.style.display = "flex";
+  if (url) {
+    const img = document.createElement("img"); img.alt = ""; img.style.display = "none";  // 加载中不显示(避免白框)
+    img.onload = () => { img.style.display = "block"; fb.style.display = "none"; };       // 就绪后才显示图
+    img.onerror = () => { try { img.parentNode.removeChild(img); } catch (_) {} };        // 失败移除, fb占位保持
+    box.appendChild(img);
+    setCover(img, fb, url);
+  }
   return box;
 }
 function hmedia(v) {
