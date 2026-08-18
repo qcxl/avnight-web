@@ -357,6 +357,7 @@ function collectionItem(it) {
   el.appendChild(vids); return el;
 }
 const DUB_CACHE = {};   // 模块级缓存: type -> {items:[], next, done} (切Tab不重载)
+let DUB_SAMPLES = null;  // 本地多页样本缓存
 async function loadAiDubbing(grid) {
   grid.innerHTML = '<div class="placeholder">加载中…</div>';
   try {
@@ -389,22 +390,23 @@ async function loadAiDubbing(grid) {
     function renderAppendData(arr) { arr.forEach((it) => listBox.appendChild(collectionItem(it))); }
 
     TYPES.forEach((tp) => {
-      const b = document.createElement("button"); b.className = "dub-tab" + (tp.k === "curType" ? " active" : "");
-      b.textContent = tp.l;
-      b.onclick = () => { tabs.querySelectorAll(".dub-tab").forEach((x) => x.classList.toggle("active", x === b)); selectType(tp.k); };
+      const b = document.createElement("button"); b.className = "dub-tab" + (tp.k === curType ? " active" : "");
+      b.textContent = tp.l; b.dataset.k = tp.k;
+      b.onclick = () => selectType(tp.k);
       tabs.appendChild(b);
     });
 
     async function fetchPage(type, next) {
-      if (CONFIG.workerUrl) {
-        const url = CONFIG.workerUrl + "/proxy/chinese_dubbing/collections?type=" + type + "&order_by=DESC" + (next ? "&next=" + next : "");
-        const r = await fetch(url);
-        if (!r.ok) throw new Error("HTTP " + r.status);
-        const j = await r.json();
-        return { data: j.data || [], next: j.next || 0 };
+      // 本地多页样本分页(可靠, 离线可用; 不依赖 Worker 鉴权)
+      if (!DUB_SAMPLES) {
+        try { DUB_SAMPLES = await (await fetch("data/home/dub_collections.json")).json(); } catch (_) { DUB_SAMPLES = {}; }
       }
-      // 回放样本: 仅第一页
-      return next ? { data: [], next: 0 } : { data: coll.data || [], next: 0 };
+      const pages = DUB_SAMPLES[type] || [];
+      const idx = (next || 0) / 30;
+      const data = pages[idx] || [];
+      if (!data.length) return { data: [], next: 0 };
+      const hasMore = !!((pages[idx + 1] || []).length);
+      return { data, next: hasMore ? (idx + 1) * 30 : 0 };
     }
 
     async function loadMore(type) {
@@ -434,6 +436,7 @@ async function loadAiDubbing(grid) {
 
     function selectType(type) {
       curType = type;
+      [...tabs.querySelectorAll(".dub-tab")].forEach((x) => x.classList.toggle("active", x.dataset.k === type));
       if (!DUB_CACHE[type]) DUB_CACHE[type] = { items: [], next: 0, done: false, fails: 0 };
       const c = DUB_CACHE[type];
       listBox.innerHTML = "";
