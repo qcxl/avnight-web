@@ -598,11 +598,9 @@ function openDubbingDetail(colCode, initVcode) {
 async function loadDdInfo(colCode) {
   let videos = [];
   try {
-    // 优先 Worker 实时; 失败回退本地样本
-    if (CONFIG.workerUrl) {
-      const r = await toFetch(CONFIG.workerUrl + "/proxy/v3/chinese_dubbing/collections/" + encodeURIComponent(colCode) + "/info", { headers: { "accept": "application/json" } });
-      if (r.ok) { const j = await r.json(); videos = j.videos || []; }
-    }
+    // 同源 _worker.js 实时; 失败回退本地样本
+    const r = await toFetch("/proxy/v3/chinese_dubbing/collections/" + encodeURIComponent(colCode) + "/info", { headers: { "accept": "application/json" } });
+    if (r.ok) { const j = await r.json(); videos = j.videos || []; }
   } catch (_) {}
   if (!videos.length) {
     const j = await (await fetch("data/home/chineseDubbingCodeInfo.json")).json().catch(() => ({ videos: [] }));
@@ -652,7 +650,7 @@ async function onDdPlay() {
   $D("dd-playbtn").style.display = "none";
   $D("dd-pstat").textContent = "正在获取播放地址…";
   try {
-    const r = await toFetch(CONFIG.workerUrl + "/proxy/v3/video/" + encodeURIComponent(vcode) + "/info?cdn=c", { headers: { "accept": "application/json" } });
+    const r = await toFetch("/proxy/v3/video/" + encodeURIComponent(vcode) + "/info?cdn=c", { headers: { "accept": "application/json" } });
     if (!r.ok) throw new Error("info HTTP " + r.status);
     const ts = parseInt(r.headers.get("x-avnight-time"), 10);
     const plain = await videoCryptDecrypt(ts * 1000, await r.text());
