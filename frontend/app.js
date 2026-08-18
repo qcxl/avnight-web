@@ -7,7 +7,7 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 /* 私有 Worker 地址(真实调用). 留空 = 纯回放 */
-const CONFIG = { workerUrl: "https://avnight-proxy.157676363.workers.dev" };
+const CONFIG = { workerUrl: "" }; // 同源: 经 Pages _worker.js 代理(同源无CORS)
 
 /* ======================================================================
    逆向展示站 — 文档 / 数据浏览 / API 控制台(原样保留)
