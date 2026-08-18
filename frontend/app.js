@@ -356,6 +356,7 @@ function collectionItem(it) {
   (it.videos || []).forEach((v) => vids.appendChild(collectionVideo(v)));
   el.appendChild(vids); return el;
 }
+const DUB_CACHE = {};   // 模块级缓存: type -> {items:[], next, done} (切Tab不重载)
 async function loadAiDubbing(grid) {
   grid.innerHTML = '<div class="placeholder">加载中…</div>';
   try {
@@ -380,33 +381,77 @@ async function loadAiDubbing(grid) {
     const TYPES = [{ k: "new", l: "最新" }, { k: "hot", l: "最热" }, { k: "recommend", l: "最推" }];
     const tabs = document.createElement("div"); tabs.className = "dub-tabs";
     const listBox = document.createElement("div"); listBox.className = "collection-list";
-    const more = document.createElement("button"); more.className = "ai-more"; more.textContent = "加载更多";
-    let curType = "new", curNext = 0;
+    const endBox = document.createElement("div"); endBox.className = "ai-end";   // 底部提示(加载中/加载更多/到底了)
+    let curType = "new";
+
+
+    function showEnd(text, cls) { endBox.textContent = text || ""; endBox.className = "ai-end" + (cls ? " " + cls : ""); }
+    function renderAppendData(arr) { arr.forEach((it) => listBox.appendChild(collectionItem(it))); }
+
     TYPES.forEach((tp) => {
-      const b = document.createElement("button"); b.className = "dub-tab" + (tp.k === "new" ? " active" : "");
+      const b = document.createElement("button"); b.className = "dub-tab" + (tp.k === "curType" ? " active" : "");
       b.textContent = tp.l;
-      b.onclick = () => { tabs.querySelectorAll(".dub-tab").forEach((x) => x.classList.toggle("active", x === b)); curType = tp.k; curNext = 0; loadDubs(true); };
+      b.onclick = () => { tabs.querySelectorAll(".dub-tab").forEach((x) => x.classList.toggle("active", x === b)); selectType(tp.k); };
       tabs.appendChild(b);
     });
-    async function loadDubs(reset) {
-      if (reset) { listBox.innerHTML = ""; more.disabled = false; more.textContent = "加载更多"; }
-      try {
-        if (CONFIG.workerUrl) {
-          const url = CONFIG.workerUrl + "/proxy/chinese_dubbing/collections?type=" + curType + "&order_by=DESC" + (curNext ? "&next=" + curNext : "");
-          const r = await fetch(url); const j = await r.json();
-          const data = j.data || []; const nxt = j.next;
-          data.forEach((it) => listBox.appendChild(collectionItem(it)));
-          if (nxt === 0 || !data.length) { more.disabled = true; more.textContent = "没有更多了"; } else curNext = nxt;
-        } else {
-          if (reset) (coll.data || []).forEach((it) => listBox.appendChild(collectionItem(it)));
-          more.disabled = true; more.textContent = "(回放样本)";
-        }
-      } catch (_) { if (reset) (coll.data || []).forEach((it) => listBox.appendChild(collectionItem(it))); more.disabled = true; }
+
+    async function fetchPage(type, next) {
+      if (CONFIG.workerUrl) {
+        const url = CONFIG.workerUrl + "/proxy/chinese_dubbing/collections?type=" + type + "&order_by=DESC" + (next ? "&next=" + next : "");
+        const r = await fetch(url);
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        const j = await r.json();
+        return { data: j.data || [], next: j.next || 0 };
+      }
+      // 回放样本: 仅第一页
+      return next ? { data: [], next: 0 } : { data: coll.data || [], next: 0 };
     }
-    wrap.appendChild(tabs); wrap.appendChild(listBox); wrap.appendChild(more);
+
+    async function loadMore(type) {
+      const c = DUB_CACHE[type]; if (!c || c.loading) return;
+      if (c.done) { showEnd("到底了, 没有更多AI中配", "done"); return; }
+      c.loading = true;
+      if (!c.items.length) showEnd("加载中, 请稍后…");
+      try {
+        const { data, next } = await fetchPage(type, c.next);
+        if (data && data.length) {
+          // 去重(按 code)后追加渲染 + 缓存
+          const seen = new Set(c.items.map((it) => it.collection_sid || it.title));
+          const fresh = data.filter((it) => !seen.has(it.collection_sid || it.title));
+          renderAppendData(fresh);
+          c.items = c.items.concat(fresh);
+          c.next = next;
+          if (!next) c.done = true;
+        } else { c.done = true; }
+      } catch (e) {
+        c.fails = (c.fails || 0) + 1;   // 失败累计
+      }
+      c.loading = false;
+      if (c.done) showEnd("到底了, 没有更多AI中配", "done");
+      else if (c.items.length) showEnd("下拉加载更多…", "more");
+      else if (c.fails >= 3) showEnd("加载失败, 请检查网络", "err");
+    }
+
+    function selectType(type) {
+      curType = type;
+      if (!DUB_CACHE[type]) DUB_CACHE[type] = { items: [], next: 0, done: false, fails: 0 };
+      const c = DUB_CACHE[type];
+      listBox.innerHTML = "";
+      renderAppendData(c.items);          // 有缓存直接渲染, 不重新 fetch
+      if (c.items.length) { if (!c.done) loadMore(type); }
+      else { showEnd("加载中, 请稍后…"); loadMore(type); }  // 首次主动拉第一页
+    }
+
+    wrap.appendChild(tabs); wrap.appendChild(listBox);
+    endBox.textContent = ""; wrap.appendChild(endBox);
     grid.innerHTML = ""; grid.appendChild(wrap);
-    more.onclick = () => loadDubs(false);
-    loadDubs(true);
+    selectType("new");
+
+    // 滚动到底自动加载分页
+    const io = new IntersectionObserver((ents) => {
+      if (ents.some((e) => e.isIntersecting)) { const c = DUB_CACHE[curType]; if (c && !c.done && !c.loading) loadMore(curType); }
+    });
+    if (endBox) io.observe(endBox);
   } catch (e) { grid.innerHTML = '<div class="placeholder">加载失败: ' + esc(e) + '</div>'; }
 }
 
