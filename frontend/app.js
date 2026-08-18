@@ -257,7 +257,7 @@ async function loadCards(site, tabId) {
   const grid = $("#" + site + "-cards");
   if (!tabId) return;
   if (site === "home" && tabId === "ai_dubbing") { if (!grid.dataset.dubbed || grid.innerHTML === "") loadAiDubbing(grid); return; }
-  grid.innerHTML = '<div class="placeholder">加载中…</div>';
+  grid.innerHTML = '<div class="grid-load">加载中…</div>';
   try {
     const arr = await (await fetch("data/cards/" + site + "/" + tabId + ".json")).json();
     if (!arr.length) { grid.innerHTML = '<div class="placeholder">暂无数据</div>'; return; }
@@ -361,14 +361,19 @@ function hmedia(v) {
   el.onclick = () => openDubbingDetail(v.collection_sid || v.code, v.code, v.cover64);
   return el;
 }
-function collectionVideo(v, colCode) {
-  const el = document.createElement("div"); el.className = "ci-video"; el.title = v.title || "";
-  const m = dubMedia(v.cover64, "cv", v.title || v.code || "");
+// 共享组件: 上图下文视频卡 (首页 AI中配 与 详情页底部 统一复用, 保持一致)
+function dubVideoCard(v, opts) {
+  const el = document.createElement("div"); el.className = "ci-video" + (opts && opts.cls ? " " + opts.cls : "");
+  el.title = v.title || "";
+  const m = dubMedia(v.cover64, (opts && opts.mediaCls) || "cv", v.title || v.code || "");
   if (v.duration != null) m.appendChild(durBadge(v.duration));
   el.appendChild(m);
   const t = document.createElement("div"); t.className = "cv-title"; t.textContent = v.title || v.code || ""; el.appendChild(t);
-  el.onclick = () => openDubbingDetail(colCode || v.code, v.code, v.cover64 || "");
+  if (opts && opts.onClick) el.onclick = () => opts.onClick(v);
   return el;
+}
+function collectionVideo(v, colCode) {
+  return dubVideoCard(v, { onClick: (x) => openDubbingDetail(colCode || x.code, x.code, x.cover64 || "") });
 }
 function collectionItem(it) {
   const el = document.createElement("div"); el.className = "collection-item";
@@ -395,7 +400,7 @@ function collectionItem(it) {
 const DUB_CACHE = {};   // 模块级缓存: type -> {items:[], next, done} (切Tab不重载)
 let DUB_SAMPLES = null;  // 本地多页样本缓存
 async function loadAiDubbing(grid) {
-  grid.innerHTML = '<div class="placeholder">加载中…</div>';
+  grid.innerHTML = '<div class="grid-load">加载中…</div>';
   try {
     const [ms, coll] = await Promise.all([
       (await fetch("data/home/chineseDubbingMainscreen.json")).json().catch(() => ({ currently_airing: {} })),
@@ -623,26 +628,15 @@ async function loadDdInfo(colCode) {
 function renderDdSide(videos) {
   const box = $D("dd-side"); box.innerHTML = "";
   videos.forEach((v, i) => {
-    // 上图下文: 图上(带时长角标) + 标题下; 默认不选中任何
-    const el = document.createElement("div"); el.className = "dd-item" + (v.code === DD.activeVcode ? " active" : "");
-    const md = document.createElement("div"); md.className = "dd-mediatop";
-    const fb = document.createElement("div"); fb.className = "dd-mfb"; fb.style.display = "none"; fb.textContent = v.title || "";
-    md.appendChild(fb);
-    if (v.cover64) { const img = document.createElement("img"); img.alt = ""; img.style.display = "none";
-      img.onload = () => { img.style.display = "block"; fb.style.display = "none"; };
-      img.onerror = () => { try { img.parentNode.removeChild(img); } catch (_) {} fb.style.display = "flex"; };
-      md.appendChild(img); setCover(img, fb, v.cover64); }
-    else fb.style.display = "flex";
-    if (v.duration != null) md.appendChild(durBadge(v.duration));
-    el.appendChild(md);
-    const ti = document.createElement("div"); ti.className = "dd-item-title"; ti.textContent = v.title || ""; el.appendChild(ti);
-    el.onclick = () => {
+    const wrap = document.createElement("div"); wrap.className = "dd-item" + (v.code === DD.activeVcode ? " active" : "");
+    // 复用共享视频卡组件(dubVideoCard), 与首页 AI中配 视频卡样式一致
+    const card = dubVideoCard(v, { cls: "dd-vcard", onClick: () => {
       DD.activeVcode = v.code; DD.cover = v.cover64 || null;
       resetPlayer();                                   // 切卡: 释放旧播放资源/封面
       const cw = $D("dd-coverwrap"); cw.style.display = "flex"; setCover($D("dd-cover"), $D("dd-coverfb"), v.cover64 || "");
       renderDdSide(videos); promptPlay(v.code);
-    };
-    box.appendChild(el);
+    }});
+    wrap.appendChild(card); box.appendChild(wrap);
   });
 }
 
