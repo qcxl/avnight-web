@@ -562,7 +562,7 @@ const _r = parseRoute();
 switchSite(_r.site, _r.tab);
 
 /* ================= 视频详情页 (openDubbingDetail) ================= */
-let DD = { col: null, videos: [], targetVcode: null, activeVcode: null, cover: null, hls: null };
+let DD = { col: null, videos: [], targetVcode: null, activeVcode: null, cover: null, hls: null, loadedVcode: null };
 
 function $D(id) { return document.getElementById(id); }
 async function videoCryptDecrypt(tsMs, cipherB64) {
@@ -585,12 +585,17 @@ function toFetch(url, opts, ms) {
   return fetch(url, Object.assign({ signal: ctl.signal }, opts || {})).finally(() => clearTimeout(t));
 }
 
+function resetPlayer() {
+  if (DD.hls) { try { DD.hls.destroy(); } catch (_) {} DD.hls = null; }
+  const v = $D("dd-video"); try { v.pause(); } catch (_) {} v.removeAttribute("src"); try { v.load(); } catch (_) {}
+  DD.loadedVcode = null;
+}
 function openDubbingDetail(colCode, vcode, cover) {
   $D("dub-detail").style.display = "flex";
   if (location.hash !== "#/dub/" + encodeURIComponent(colCode))
     history.pushState(null, "", "#/dub/" + encodeURIComponent(colCode));
   DD.col = colCode; DD.targetVcode = vcode || null; DD.activeVcode = null; DD.cover = cover || null;
-  $D("dd-video").removeAttribute("src"); if (DD.hls) { try { DD.hls.destroy(); } catch (_) {} DD.hls = null; }
+  resetPlayer();
   $D("dd-playbtn").style.display = "flex";
   $D("dd-pstat").textContent = "";
   // 播放器显示被点击视频封面
@@ -631,9 +636,12 @@ function renderDdSide(videos) {
     if (v.duration != null) md.appendChild(durBadge(v.duration));
     el.appendChild(md);
     const ti = document.createElement("div"); ti.className = "dd-item-title"; ti.textContent = v.title || ""; el.appendChild(ti);
-    el.onclick = () => { DD.activeVcode = v.code; DD.cover = v.cover64 || null;
+    el.onclick = () => {
+      DD.activeVcode = v.code; DD.cover = v.cover64 || null;
+      resetPlayer();                                   // 切卡: 释放旧播放资源/封面
       const cw = $D("dd-coverwrap"); cw.style.display = "flex"; setCover($D("dd-cover"), $D("dd-coverfb"), v.cover64 || "");
-      renderDdSide(videos); promptPlay(v.code); };
+      renderDdSide(videos); promptPlay(v.code);
+    };
     box.appendChild(el);
   });
 }
@@ -648,6 +656,12 @@ async function onDdPlay() {
   const vcode = DD.activeVcode || DD.targetVcode; const video = $D("dd-video");
   if (!vcode) { $D("dd-pstat").textContent = "请先选择要播放的视频"; $D("dd-playbtn").style.display = "flex"; return; }
   $D("dd-playbtn").style.display = "none";
+  // 同一视频已加载 → 不重复拉流, 直接恢复播放
+  if (DD.loadedVcode === vcode && video.getAttribute && video.getAttribute("src")) {
+    $D("dd-coverwrap").style.display = "none";
+    if (video.paused) video.play().catch(() => $D("dd-pstat").textContent = "请点击播放器播放");
+    return;
+  }
   $D("dd-coverwrap").style.display = "none";   // 开始播放隐藏封面
   $D("dd-pstat").textContent = "正在获取播放地址…";
   try {
@@ -666,10 +680,10 @@ async function onDdPlay() {
     if (window.Hls && Hls.isSupported()) {
       const hls = new Hls({ maxBufferLength: 60 }); DD.hls = hls;
       hls.loadSource(blobUrl); hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => { $D("dd-pstat").textContent = ""; video.play().catch(() => $D("dd-pstat").textContent = "请点击播放器播放"); });
+      hls.on(Hls.Events.MANIFEST_PARSED, () => { $D("dd-pstat").textContent = ""; DD.loadedVcode = vcode; video.play().catch(() => $D("dd-pstat").textContent = "请点击播放器播放"); });
       hls.on(Hls.Events.ERROR, (e, data) => { if (data && data.fatal) $D("dd-pstat").textContent = "播放出错: " + (data.type || ""); });
     } else {
-      video.src = blobUrl; $D("dd-pstat").textContent = "";
+      video.src = blobUrl; $D("dd-pstat").textContent = ""; DD.loadedVcode = vcode;
       video.play().catch(() => $D("dd-pstat").textContent = "请点击播放器播放");
     }
   } catch (e) { $D("dd-playbtn").style.display = "flex"; $D("dd-pstat").textContent = "播放失败: " + String(e).slice(0, 60); }
@@ -681,8 +695,7 @@ function closeDubbingDetail() {
   const curHash = location.hash;
   if (curHash.startsWith("#/dub/")) history.back();
   else if (curHash !== "#/home/ai_dubbing") { history.pushState(null, "", "#/home/ai_dubbing"); }
-  if (DD.hls) { try { DD.hls.destroy(); } catch (_) {} DD.hls = null; }
-  const v = $D("dd-video"); try { v.pause(); } catch (_) {} v.removeAttribute("src");
+  resetPlayer();
   DD.activeVcode = null; DD.targetVcode = null; DD.cover = null;
 }
 
