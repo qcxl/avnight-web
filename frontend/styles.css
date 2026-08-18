@@ -226,12 +226,13 @@ button { font-family: inherit; }
 
 /* ===== AI中配 Tab 专门布局(chinese_dubbing) ===== */
 .ai-wrap { padding: 4px 0 30px; }
-.hero-section { padding: 18px 20px 6px; }
+.hero-section { padding: 20px 20px 6px; }
+.hero-section { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0 14px; }
 .hero-title {
   font-family: var(--font-display); font-size: 30px; font-weight: 700; letter-spacing: 1px;
-  color: #fff; line-height: 1.1;
+  color: #fff; line-height: 1.1; white-space: nowrap;
 }
-.hero-sub { font-size: 14px; color: var(--accent); margin-top: 4px; letter-spacing: .5px; }
+.hero-sub { font-size: 15px; color: var(--accent); letter-spacing: .5px; }
 .hscroll {
   display: flex; gap: 12px; overflow-x: auto; padding: 16px 20px 8px; scroll-snap-type: x mandatory;
 }
@@ -253,10 +254,12 @@ button { font-family: inherit; }
 .hero-gap { height: 14px; }
 
 /* 最新/最热/最推 三Tab */
-.dub-tabs { display: flex; gap: 8px; padding: 18px 20px 4px; border-top: 1px solid var(--border); }
-.dub-tab { padding: 7px 20px; border: 1px solid var(--border-strong); border-radius: 20px; background: transparent;
-  color: var(--text-dim); cursor: pointer; font-size: 14px; }
-.dub-tab.active { background: var(--accent); border-color: var(--accent); color: #141006; font-weight: 600; }
+.dub-tabs { display: flex; gap: 10px; padding: 20px 20px 6px; border-top: 1px solid var(--border); align-items: center; }
+.dub-tabs-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-faint); margin-right: 4px; }
+.dub-tab { padding: 8px 26px; border: 1px solid var(--border-strong); border-radius: 22px; background: transparent;
+  color: var(--text-dim); cursor: pointer; font-size: 14.5px; font-weight: 500; transition: all .15s; font-family: var(--font-body); }
+.dub-tab:hover { color: #fff; border-color: var(--accent); }
+.dub-tab.active { background: var(--accent); border-color: var(--accent); color: #141006; font-weight: 700; }
 
 /* 合集 item: 左图 + 右文字 + 下方横滑 videos */
 .collection-list { display: flex; flex-direction: column; gap: 22px; padding: 14px 20px 10px; }

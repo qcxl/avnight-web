@@ -265,94 +265,139 @@ async function loadCards(site, tabId) {
     grid.innerHTML = '<div class="placeholder">加载失败: ' + esc(e) + "</div>";
   }
 }
+/* ===== 封面解码加载器(活域 tlcl1 CORS=* + base64去'a'混淆) ===== */
+const LIVE_DOMS = ["tlcl1.yjior.com", "stlcl-1.yjior.com", "qlaops2.humenhd.com", "9qcl3.poiu012.com"];
+async function coverBlob(rawUrl) {
+  if (!rawUrl) return null;
+  const hosts = LIVE_DOMS.filter((h) => !rawUrl.includes(h));
+  hosts.unshift(new URL(rawUrl).host); // 原域名优先
+  for (const h of hosts) {
+    try {
+      const u = rawUrl.replace(/^https?:\/\/[^\/]+/, "https://" + h);
+      const r = await fetch(u, { mode: "cors" });
+      if (!r.ok) continue;
+      const buf = new Uint8Array(await r.arrayBuffer());
+      // 直接图片流
+      if ((buf[0] === 0xff && buf[1] === 0xd8) || (buf[0] === 0x89 && buf[1] === 0x50) ||
+          (buf[0] === 0x52 && buf[1] === 0x49)) {
+        let type = "image/webp";
+        if (buf[0] === 0xff) type = "image/jpeg";
+        else if (buf[0] === 0x89) type = "image/png";
+        return new Blob([buf], { type });
+      }
+      // base64 文本(可能带 1-2 个前导混淆字符)
+      const s = new TextDecoder().decode(buf).trim();
+      for (let cut = 0; cut < 3; cut++) {
+        try {
+          const t = s.slice(cut);
+          const pad = t.length % 4 ? "=".repeat(4 - (t.length % 4)) : "";
+          const bin = atob(t + pad);
+          const bytes = new Uint8Array(bin.length);
+          for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+          return new Blob([bytes], { type: "image/webp" });
+        } catch (_) {}
+      }
+    } catch (_) {}
+  }
+  return null;
+}
+async function setCover(img, fb, rawUrl) {
+  try {
+    const blob = await coverBlob(rawUrl);
+    if (blob) { img.src = URL.createObjectURL(blob); img.style.display = "block"; }
+    else if (fb) fb.style.display = "flex";
+  } catch (_) { if (fb) fb.style.display = "flex"; }
+}
+
 /* ===== AI中配 Tab 专门渲染(chinese_dubbing) ===== */
 function dubMedia(url, fbCls, title) {
-  const box=document.createElement("div"); box.className=fbCls+"-img";
-  if (url){ const img=document.createElement("img"); img.loading="lazy"; img.alt=""; img.src=url;
-    img.onerror=()=>{ box.innerHTML='<div class="'+fbCls+'-fb"><span>'+esc(title||"")+'</span></div>'; };
-    box.appendChild(img);
-  } else { box.innerHTML='<div class="'+fbCls+'-fb"><span>'+esc(title||"")+'</span></div>'; }
+  const box = document.createElement("div"); box.className = fbCls + "-img";
+  const fb = document.createElement("div"); fb.className = fbCls + "-fb"; fb.style.display = "none";
+  const sp = document.createElement("span"); sp.textContent = title || ""; fb.appendChild(sp);
+  box.appendChild(fb);
+  if (url) { const img = document.createElement("img"); img.alt = ""; box.appendChild(img); setCover(img, fb, url); }
+  else fb.style.display = "flex";
   return box;
 }
-function hmedia(v){ // 横滑单集卡(封面上图下文)
-  const el=document.createElement("div"); el.className="hmedia-card"; el.title=v.title||"";
-  const m=dubMedia(v.cover64, "hm", v.title||v.code||""); el.appendChild(m);
-  const t=document.createElement("div"); t.className="hm-title"; t.textContent=v.title||v.code||"";
-  el.appendChild(t); return el;
+function hmedia(v) {
+  const el = document.createElement("div"); el.className = "hmedia-card"; el.title = v.title || "";
+  const m = dubMedia(v.cover64, "hm", v.title || v.code || ""); el.appendChild(m);
+  return el;
 }
-function collectionVideo(v){ // item 下方横滑视频卡
-  const el=document.createElement("div"); el.className="ci-video"; el.title=v.title||"";
-  const m=dubMedia(v.cover64, "cv", v.title||v.code||""); el.appendChild(m);
-  const t=document.createElement("div"); t.className="cv-title"; t.textContent=v.title||v.code||"";
-  el.appendChild(t); return el;
+function collectionVideo(v) {
+  const el = document.createElement("div"); el.className = "ci-video"; el.title = v.title || "";
+  const m = dubMedia(v.cover64, "cv", v.title || v.code || ""); el.appendChild(m);
+  const t = document.createElement("div"); t.className = "cv-title"; t.textContent = v.title || v.code || ""; el.appendChild(t);
+  return el;
 }
-function collectionItem(it){ // 左小图+右文字(collection_type/title) + 下方横滑 videos
-  const el=document.createElement("div"); el.className="collection-item";
-  const head=document.createElement("div"); head.className="ci-head";
-  const m=document.createElement("div"); m.className="ci-media";
-  if(it.cover64){ const img=document.createElement("img"); img.loading="lazy"; img.alt=""; img.src=it.cover64; img.onerror=()=>{m.classList.add("ci-fb")}; m.appendChild(img);} else m.classList.add("ci-fb");
+function collectionItem(it) {
+  const el = document.createElement("div"); el.className = "collection-item";
+  const head = document.createElement("div"); head.className = "ci-head";
+  const m = document.createElement("div"); m.className = "ci-media";
+  const fb = document.createElement("div"); fb.className = "ci-fb"; fb.style.display = "none"; m.appendChild(fb);
+  if (it.cover64) { const img = document.createElement("img"); img.alt = ""; m.appendChild(img); setCover(img, fb, it.cover64); }
+  else fb.style.display = "flex";
   head.appendChild(m);
-  const info=document.createElement("div"); info.className="ci-info";
-  const ty=document.createElement("div"); ty.className="ci-type"; ty.textContent=it.collection_type||"";
-  const ti=document.createElement("div"); ti.className="ci-title"; ti.textContent=it.title||"";
+  const info = document.createElement("div"); info.className = "ci-info";
+  const ty = document.createElement("div"); ty.className = "ci-type"; ty.textContent = it.collection_type || "";
+  const ti = document.createElement("div"); ti.className = "ci-title"; ti.textContent = it.title || "";
   info.appendChild(ty); info.appendChild(ti); head.appendChild(info); el.appendChild(head);
-  const vids=document.createElement("div"); vids.className="ci-videos";
-  (it.videos||[]).forEach(v=>vids.appendChild(collectionVideo(v)));
+  const vids = document.createElement("div"); vids.className = "ci-videos";
+  (it.videos || []).forEach((v) => vids.appendChild(collectionVideo(v)));
   el.appendChild(vids); return el;
 }
 async function loadAiDubbing(grid) {
-  grid.innerHTML='<div class="placeholder">加载中…</div>';
-  try{
-    const [ms,coll]=await Promise.all([
-      (await fetch("data/home/chineseDubbingMainscreen.json")).json().catch(()=>({currently_airing:{}})),
-      (await fetch("data/home/chineseDubbingCollections.json")).json().catch(()=>({data:[],next:0}))
+  grid.innerHTML = '<div class="placeholder">加载中…</div>';
+  try {
+    const [ms, coll] = await Promise.all([
+      (await fetch("data/home/chineseDubbingMainscreen.json")).json().catch(() => ({ currently_airing: {} })),
+      (await fetch("data/home/chineseDubbingCollections.json")).json().catch(() => ({ data: [], next: 0 }))
     ]);
-    const wrap=document.createElement("div"); wrap.className="ai-wrap";
-    const ca=ms.currently_airing||{};
-    [ {title:"日本AV深夜剧场",sub:"中文配音加持,越夜越来劲",list:ca.LONG||[]},
-      {title:"里番次元剧场",sub:"中文声线入戏,剧情越走越带劲",list:ca.ANIMATION||[]}
-    ].forEach(sec=>{
-      const s=document.createElement("section"); s.className="hero-section";
-      const t=document.createElement("div"); t.className="hero-title"; t.textContent=sec.title;
-      const sub=document.createElement("div"); sub.className="hero-sub"; sub.textContent=sec.sub;
+    const wrap = document.createElement("div"); wrap.className = "ai-wrap";
+    const ca = ms.currently_airing || {};
+    [ { title: "日本AV深夜剧场", sub: "中文配音加持,越夜越来劲", list: ca.LONG || [] },
+      { title: "里番次元剧场", sub: "中文声线入戏,剧情越走越带劲", list: ca.ANIMATION || [] }
+    ].forEach((sec) => {
+      const s = document.createElement("section"); s.className = "hero-section";
+      const t = document.createElement("div"); t.className = "hero-title"; t.textContent = sec.title;
+      const sub = document.createElement("div"); sub.className = "hero-sub"; sub.textContent = sec.sub;
       s.appendChild(t); s.appendChild(sub);
-      const hs=document.createElement("div"); hs.className="hscroll";
-      (sec.list||[]).forEach(v=>hs.appendChild(hmedia(v)));
+      const hs = document.createElement("div"); hs.className = "hscroll";
+      (sec.list || []).forEach((v) => hs.appendChild(hmedia(v)));
       s.appendChild(hs); wrap.appendChild(s);
-      const g=document.createElement("div"); g.className="hero-gap"; wrap.appendChild(g);
+      const g = document.createElement("div"); g.className = "hero-gap"; wrap.appendChild(g);
     });
-    // 最新/最热/最推 三Tab
-    const TYPES=[{k:"new",l:"最新"},{k:"hot",l:"最热"},{k:"recommend",l:"最推"}];
-    const tabs=document.createElement("div"); tabs.className="dub-tabs";
-    const listBox=document.createElement("div"); listBox.className="collection-list";
-    const more=document.createElement("button"); more.className="ai-more"; more.textContent="加载更多";
-    let curType="new", curNext=0, moreUrl=null;
-    function resetTabs(activeBtn){ tabs.querySelectorAll(".dub-tab").forEach(x=>x.classList.toggle("active",x===activeBtn)); }
-    TYPES.forEach(tp=>{ const b=document.createElement("button"); b.className="dub-tab"+(tp.k==="new"?" active":"");
-      b.textContent=tp.l; b.onclick=()=>{ resetTabs(b); curType=tp.k; curNext=0; loadDubs(true); };
-      tabs.appendChild(b); });
-    async function loadDubs(reset){
-      if(reset){ listBox.innerHTML=""; more.disabled=false; more.textContent="加载更多"; }
-      const mk=(base)=>{ try{ const u=new URL(base); if(reset&&curNext===0)u.searchParams.set("next","0"); else if(!reset&&curNext)u.searchParams.set("next",String(curNext)); return u.href; }catch(e){ return base; } };
-      try{
-        if(CONFIG.workerUrl){
-          let url=CONFIG.workerUrl+"/proxy/chinese_dubbing/collections?type="+curType+"&order_by=DESC"+(curNext?"&next="+curNext:"");
-          const r=await fetch(url); const j=await r.json();
-          const data=j.data||[]; const nxt=j.next;
-          data.forEach(it=>listBox.appendChild(collectionItem(it)));
-          if(nxt===0||!data.length){ more.disabled=true; more.textContent="没有更多了"; } else curNext=nxt;
+    const TYPES = [{ k: "new", l: "最新" }, { k: "hot", l: "最热" }, { k: "recommend", l: "最推" }];
+    const tabs = document.createElement("div"); tabs.className = "dub-tabs";
+    const listBox = document.createElement("div"); listBox.className = "collection-list";
+    const more = document.createElement("button"); more.className = "ai-more"; more.textContent = "加载更多";
+    let curType = "new", curNext = 0;
+    TYPES.forEach((tp) => {
+      const b = document.createElement("button"); b.className = "dub-tab" + (tp.k === "new" ? " active" : "");
+      b.textContent = tp.l;
+      b.onclick = () => { tabs.querySelectorAll(".dub-tab").forEach((x) => x.classList.toggle("active", x === b)); curType = tp.k; curNext = 0; loadDubs(true); };
+      tabs.appendChild(b);
+    });
+    async function loadDubs(reset) {
+      if (reset) { listBox.innerHTML = ""; more.disabled = false; more.textContent = "加载更多"; }
+      try {
+        if (CONFIG.workerUrl) {
+          const url = CONFIG.workerUrl + "/proxy/chinese_dubbing/collections?type=" + curType + "&order_by=DESC" + (curNext ? "&next=" + curNext : "");
+          const r = await fetch(url); const j = await r.json();
+          const data = j.data || []; const nxt = j.next;
+          data.forEach((it) => listBox.appendChild(collectionItem(it)));
+          if (nxt === 0 || !data.length) { more.disabled = true; more.textContent = "没有更多了"; } else curNext = nxt;
         } else {
-          // 回放: 首次用样本; 更多标记
-          if(reset){ (coll.data||[]).forEach(it=>listBox.appendChild(collectionItem(it))); }
-          more.disabled=true; more.textContent="(回放样本; 配置 Worker 可真实分页/换type)";
+          if (reset) (coll.data || []).forEach((it) => listBox.appendChild(collectionItem(it)));
+          more.disabled = true; more.textContent = "(回放样本)";
         }
-      }catch(e){ if(reset){ (coll.data||[]).forEach(it=>listBox.appendChild(collectionItem(it))); } more.disabled=true; }
+      } catch (_) { if (reset) (coll.data || []).forEach((it) => listBox.appendChild(collectionItem(it))); more.disabled = true; }
     }
     wrap.appendChild(tabs); wrap.appendChild(listBox); wrap.appendChild(more);
-    grid.innerHTML=""; grid.appendChild(wrap);
-    more.onclick=()=>loadDubs(false);
+    grid.innerHTML = ""; grid.appendChild(wrap);
+    more.onclick = () => loadDubs(false);
     loadDubs(true);
-  }catch(e){ grid.innerHTML='<div class="placeholder">加载失败: '+esc(e)+'</div>'; }
+  } catch (e) { grid.innerHTML = '<div class="placeholder">加载失败: ' + esc(e) + '</div>'; }
 }
 
 function renderCard(c) {
