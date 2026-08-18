@@ -24,7 +24,9 @@ async function proxy(base, qs) {
     const ct = resp.headers.get("content-type") || "";
     if (ct.includes("json")) { const j = await resp.json(); return json(j, resp.status); }
     const buf = await resp.arrayBuffer();
-    return new Response(buf, { status: resp.status, headers: { "content-type": ct }, statusText: resp.statusText });
+    const extraHeaders = { "content-type": ct };
+    const avT = resp.headers.get("x-avnight-time"); if (avT) extraHeaders["x-avnight-time"] = avT;  // 视频解密必需时间戳头
+    return new Response(buf, { status: resp.status, headers: extraHeaders, statusText: resp.statusText });
   } catch (e) { return json({ ok: false, error: String(e) }, 502); }
 }
 async function play(u, method, body) {
