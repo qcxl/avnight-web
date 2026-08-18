@@ -480,6 +480,7 @@ async function loadAiDubbing(grid) {
       if (curType && curType !== type && DUB_CACHE[curType] && DUB_CACHE[curType].el) {
         const el = DUB_CACHE[curType].el;
         DUB_CACHE[curType].offset = Math.max(0, grid.scrollTop - listOffset(el));
+        DUB_CACHE[curType].scrollSet = true;
       }
       curType = type;
       [...tabs.querySelectorAll(".dub-tab")].forEach((x) => x.classList.toggle("active", x.dataset.k === type));
@@ -490,7 +491,8 @@ async function loadAiDubbing(grid) {
       Object.keys(DUB_CACHE).forEach((k) => { if (DUB_CACHE[k].el) DUB_CACHE[k].el.style.display = k === type ? "" : "none"; });
       listBox = c.el;
       wrap.appendChild(endBox);               // 底部状态保持在列表后面
-      grid.scrollTop = (c.offset || 0) + listOffset(c.el);   // 恢复到该tab内部对应位置
+      if (c.scrollSet) grid.scrollTop = (c.offset || 0) + listOffset(c.el);   // 已滚过的tab恢复
+      else grid.scrollTop = 0;                                                    // 首屏/未滚保持顶部
       if (!c.items.length && !c.done) { showEnd("加载中, 请稍后…"); loadMore(type); }   // 首次
       else if (c.done) showEnd("到底了, 没有更多AI中配", "done");
       else showEnd("下拉加载更多…", "more");
