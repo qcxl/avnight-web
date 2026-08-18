@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AVNight</title>
-<link rel="stylesheet" href="styles.css?v=20">
+<link rel="stylesheet" href="styles.css?v=21">
 </head>
 <body>
 <header class="topbar">
@@ -95,12 +95,16 @@
 <script src="vendor/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-md5@0.7.3/build/md5.min.js"></script>
-<script src="app.js?v=20"></script>
+<script src="app.js?v=21"></script>
 <!-- 视频详情页 overlay -->
 <div id="dub-detail" class="dub-detail" style="display:none;">
   <button class="dd-back" id="dd-back">&#8592; 返回</button>
   <div class="dd-body">
     <div class="dd-player">
+      <div class="dd-coverwrap" id="dd-coverwrap" style="display:flex;">
+        <img id="dd-cover" alt="">
+        <div class="dd-coverfb" id="dd-coverfb" style="display:none;"></div>
+      </div>
       <video id="dd-video" controls playsinline preload="metadata"></video>
       <div class="dd-playbtn" id="dd-playbtn">&#9654; 点击播放</div>
       <div class="dd-pstat" id="dd-pstat"></div>
