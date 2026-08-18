@@ -322,6 +322,7 @@ function dubMedia(url, fbCls, title) {
 function hmedia(v) {
   const el = document.createElement("div"); el.className = "hmedia-card"; el.title = v.title || "";
   const m = dubMedia(v.cover64, "hm", v.title || v.code || ""); el.appendChild(m);
+  const t = document.createElement("div"); t.className = "hm-title"; t.textContent = v.title || v.code || ""; el.appendChild(t);
   return el;
 }
 function collectionVideo(v) {
