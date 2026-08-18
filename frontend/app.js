@@ -267,15 +267,24 @@ async function loadCards(site, tabId) {
 }
 /* ===== 封面解码加载器(活域 tlcl1 CORS=* + base64去'a'混淆) ===== */
 const LIVE_DOMS = ["tlcl1.yjior.com", "stlcl-1.yjior.com", "qlaops2.humenhd.com", "9qcl3.poiu012.com"];
+function liveDomainFor(url) {
+  if (url.includes("/dubbing/") || url.includes("/xchina/")) return "stlcl-1.yjior.com"; // self_cover 池
+  return "tlcl1.yjior.com";                                                              // cover 池
+}
+async function fetchOnce(u) {
+  const r = await fetch(u, { mode: "cors" });
+  return r.ok ? r : null;
+}
 async function coverBlob(rawUrl) {
   if (!rawUrl) return null;
-  const hosts = LIVE_DOMS.filter((h) => !rawUrl.includes(h));
-  hosts.unshift(new URL(rawUrl).host); // 原域名优先
+  const primary = liveDomainFor(rawUrl);
+  const hosts = [primary, ...LIVE_DOMS.filter((h) => h !== primary), new URL(rawUrl).host];
   for (const h of hosts) {
     try {
       const u = rawUrl.replace(/^https?:\/\/[^\/]+/, "https://" + h);
-      const r = await fetch(u, { mode: "cors" });
-      if (!r.ok) continue;
+      let r = null;
+      try { r = await fetchOnce(u); } catch (_) { r = await fetchOnce(u); } // 网络瞬时失败重试一次
+      if (!r) continue;
       const buf = new Uint8Array(await r.arrayBuffer());
       // 直接图片流
       if ((buf[0] === 0xff && buf[1] === 0xd8) || (buf[0] === 0x89 && buf[1] === 0x50) ||
