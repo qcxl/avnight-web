@@ -223,3 +223,61 @@ button { font-family: inherit; }
   text-shadow: 0 2px 8px rgba(0,0,0,.65);
 }
 .poster-code { font-family: var(--font-mono); font-size: 12px; color: var(--accent); letter-spacing: .5px; }
+
+/* ===== AI中配 Tab 专门布局(chinese_dubbing) ===== */
+.ai-wrap { padding: 4px 0 30px; }
+.hero-section { padding: 18px 20px 6px; }
+.hero-title {
+  font-family: var(--font-display); font-size: 30px; font-weight: 700; letter-spacing: 1px;
+  color: #fff; line-height: 1.1;
+}
+.hero-sub { font-size: 14px; color: var(--accent); margin-top: 4px; letter-spacing: .5px; }
+.hscroll {
+  display: flex; gap: 12px; overflow-x: auto; padding: 16px 20px 8px; scroll-snap-type: x mandatory;
+}
+.hscroll::-webkit-scrollbar { height: 8px; }
+.hscroll::-webkit-scrollbar-thumb { background: #2a3344; border-radius: 4px; }
+.hmedia-card {
+  flex: none; width: 150px; scroll-snap-align: start; cursor: pointer;
+  background: var(--bg-elev2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+  transition: border-color .15s;
+}
+.hmedia-card:hover { border-color: var(--accent); }
+.hmedia-card .hm-img { height: 200px; background: #0c0e13; position: relative; }
+.hmedia-card .hm-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hmedia-card .hm-fb { position: absolute; inset: 0; display: flex; align-items: flex-end; padding: 10px;
+  background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,.7)); }
+.hmedia-card .hm-fb span { font-size: 12px; color: #fff; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.hmedia-card .hm-title { padding: 8px 10px; font-size: 13px; color: var(--text); line-height: 1.35;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.hero-gap { height: 14px; }
+
+/* 最新/最热/最推 三Tab */
+.dub-tabs { display: flex; gap: 8px; padding: 18px 20px 4px; border-top: 1px solid var(--border); }
+.dub-tab { padding: 7px 20px; border: 1px solid var(--border-strong); border-radius: 20px; background: transparent;
+  color: var(--text-dim); cursor: pointer; font-size: 14px; }
+.dub-tab.active { background: var(--accent); border-color: var(--accent); color: #141006; font-weight: 600; }
+
+/* 合集 item: 左图 + 右文字 + 下方横滑 videos */
+.collection-list { display: flex; flex-direction: column; gap: 22px; padding: 14px 20px 10px; }
+.collection-item { background: var(--bg-elev1); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+.ci-head { display: flex; gap: 14px; margin-bottom: 12px; }
+.ci-media { flex: none; width: 120px; height: 84px; background: #0c0e13; border-radius: 8px; overflow: hidden; position: relative; }
+.ci-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ci-media .ci-fb { position: absolute; inset: 0; background: linear-gradient(160deg,#232b3f,#0c0e13); }
+.ci-info { display: flex; flex-direction: column; justify-content: center; gap: 8px; min-width: 0; }
+.ci-type { font-size: 12px; font-weight: 600; color: var(--accent); letter-spacing: .5px; }
+.ci-title { font-size: 15px; color: #fff; font-weight: 600; line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ci-videos { display: flex; gap: 10px; overflow-x: auto; padding-top: 6px; scroll-snap-type: x mandatory; }
+.ci-video { flex: none; width: 132px; scroll-snap-align: start; cursor: pointer;
+  background: var(--bg-elev2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.ci-video:hover { border-color: var(--accent); }
+.ci-video .cv-img { height: 176px; background: #0c0e13; position: relative; }
+.ci-video .cv-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ci-video .cv-img .cv-fb { position: absolute; inset: 0; background: linear-gradient(160deg,#232b3f,#0c0e13); }
+.ci-video .cv-title { padding: 7px 9px; font-size: 12.5px; color: var(--text); line-height: 1.35;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ai-more { display: block; margin: 6px auto 20px; padding: 9px 30px; background: var(--bg-elev2);
+  border: 1px solid var(--border-strong); border-radius: 8px; color: var(--text-dim); cursor: pointer; font-size: 13.5px; }
+.ai-more:hover { color: var(--text); border-color: var(--accent); }
