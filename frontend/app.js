@@ -325,6 +325,18 @@ async function setCover(img, fb, rawUrl) {
 }
 
 /* ===== AI中配 Tab 专门渲染(chinese_dubbing) ===== */
+// 时长秒数 -> 00:00 / 00:00:00 (>=1h 含小时)
+function fmtDur(sec) {
+  sec = Math.max(0, Math.floor(Number(sec) || 0));
+  const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+  const mm = String(m).padStart(2, "0"), ss = String(s).padStart(2, "0");
+  return h > 0 ? String(h).padStart(2, "0") + ":" + mm + ":" + ss : mm + ":" + ss;
+}
+// 图片右下角时长角标
+function durBadge(sec) {
+  const b = document.createElement("span"); b.className = "dur-badge"; b.textContent = fmtDur(sec);
+  return b;
+}
 function dubMedia(url, fbCls, title) {
   const box = document.createElement("div"); box.className = fbCls + "-img";
   const fb = document.createElement("div"); fb.className = fbCls + "-fb"; fb.style.display = "flex";  // 纯深色圆角占位(不带文字)
@@ -340,13 +352,17 @@ function dubMedia(url, fbCls, title) {
 }
 function hmedia(v) {
   const el = document.createElement("div"); el.className = "hmedia-card"; el.title = v.title || "";
-  const m = dubMedia(v.cover64, "hm", v.title || v.code || ""); el.appendChild(m);
+  const m = dubMedia(v.cover64, "hm", v.title || v.code || "");
+  if (v.duration != null) m.appendChild(durBadge(v.duration));
+  el.appendChild(m);
   const t = document.createElement("div"); t.className = "hm-title"; t.textContent = v.title || v.code || ""; el.appendChild(t);
   return el;
 }
 function collectionVideo(v) {
   const el = document.createElement("div"); el.className = "ci-video"; el.title = v.title || "";
-  const m = dubMedia(v.cover64, "cv", v.title || v.code || ""); el.appendChild(m);
+  const m = dubMedia(v.cover64, "cv", v.title || v.code || "");
+  if (v.duration != null) m.appendChild(durBadge(v.duration));
+  el.appendChild(m);
   const t = document.createElement("div"); t.className = "cv-title"; t.textContent = v.title || v.code || ""; el.appendChild(t);
   return el;
 }

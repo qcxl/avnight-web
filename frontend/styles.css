@@ -303,3 +303,11 @@ button { font-family: inherit; }
 img { border: 0 !important; outline: 0 !important; box-shadow: none !important; }
 .card-media img, .hmedia-card .hm-img img, .ci-media img, .ci-video .cv-img img {
   border: 0 !important; outline: 0 !important; box-shadow: none !important; border-radius: 0; background: #0c0e13; }
+
+/* 视频时长角标: 图片右下角, 距右/下各5px, 白字半透明底内边距小圆角 */
+.dur-badge {
+  position: absolute; right: 5px; bottom: 5px; z-index: 5;
+  background: rgba(0, 0, 0, 0.55); color: #fff;
+  font-size: 11px; line-height: 1; padding: 3px 5px; border-radius: 3px;
+  font-variant-numeric: tabular-nums; letter-spacing: .3px;
+}
