@@ -318,7 +318,8 @@ img { border: 0 !important; outline: 0 !important; box-shadow: none !important; 
 .dd-back { align-self: flex-start; margin: 12px 16px; padding: 7px 16px; background: var(--bg-elev2);
   border: 1px solid var(--border); border-radius: 8px; color: var(--text); cursor: pointer; font-size: 13px; }
 .dd-back:hover { border-color: var(--accent); color: #fff; }
-.dd-body { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 0 16px 46px; min-height: 0; width: 100%; max-width: 1400px; margin: 0 auto; }
+.dd-body { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 0 16px 28px; min-height: 0;
+  width: 100%; max-width: 1400px; margin: 0 auto; overflow-y: auto; }   /* 矮窗口可滚, 卡片不被视口裁 */
 /* 播放器 高420(占满宽) */
 .dd-player { position: relative; height: 420px; width: 100%; flex: none; background: #000; border-radius: 12px; overflow: hidden; }
 .dd-player video, .dd-player img, video, img { border: 0 !important; outline: 0 !important; box-shadow: none !important; }
@@ -331,21 +332,25 @@ img { border: 0 !important; outline: 0 !important; box-shadow: none !important; 
   font-size: 12.5px; z-index: 4; text-shadow: 0 1px 3px #000; }
 /* 列表: 播放器下方, 横向滑动, 隐藏横滑条 */
 .dd-side { flex: none; width: 100%; display: flex; flex-direction: row; gap: 10px; overflow-x: auto;
-  padding: 2px 2px 8px; margin-bottom: 20px; scrollbar-width: none; -ms-overflow-style: none; }
+  align-items: flex-start; padding: 4px 4px 10px; margin-bottom: 20px; scrollbar-width: none; -ms-overflow-style: none; }
 .dd-side::-webkit-scrollbar { display: none; height: 0; }
 /* 右侧 item 190x210 */
 /* 底部视频列表: 上图下文卡 (图184 = 275x184; 卡高自适应文字完整显示) */
-.dd-item { flex: none; width: 277px; min-height: 184px; cursor: pointer; border-radius: 10px; overflow: hidden;
-  background: var(--bg-elev2); border: 1px solid var(--border); transition: border-color .15s; }
-.dd-item:hover { border-color: var(--accent); }
-.dd-item.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+.dd-item { flex: none; width: 279px; cursor: pointer; border-radius: 10px;
+  background: transparent; border: 0; padding: 1px; }
+/* hover 黄框落在内层卡(.dd-vcard)上, 四边完整可见 */
+.dd-item:hover { border: 0; }
+.dd-item.active { border: 0; }
 .dd-mediatop { position: relative; width: 100%; height: 184px; background: #0c0e13; overflow: hidden; }
 .dd-mediatop img { width: 100%; height: 100%; object-fit: cover; display: block; border: 0 !important; }
 .dd-mediatop .dd-mfb { position: absolute; inset: 0; background: linear-gradient(160deg,#232b3f,#0c0e13);
   display: flex; align-items: flex-end; color: #fff; font-size: 11px; padding: 8px; }
 .dd-item-title { padding: 8px 9px; font-size: 12.5px; color: var(--text); line-height: 1.4; word-break: break-word; }
 /* 详情页底部复用 dubVideoCard: 卡内 cv 图 277x184 */
-.dd-item .dd-vcard { width: 277px; border-radius: 10px; overflow: hidden; }
+.dd-item .dd-vcard { width: 277px; border-radius: 10px; overflow: hidden;
+  background: var(--bg-elev2); border: 1px solid var(--border); transition: border-color .15s; }
+.dd-item:hover .dd-vcard, .dd-item.active .dd-vcard { border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent) inset; }
 .dd-item .dd-vcard .cv-img { width: 277px; height: 184px; border-radius: 0; }
 .dd-item .dd-vcard .cv-title { display: block; padding: 8px 9px; font-size: 12.5px; color: var(--text);
   line-height: 1.4; word-break: break-word; -webkit-line-clamp: unset; overflow: visible; }
