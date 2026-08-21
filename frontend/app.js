@@ -664,7 +664,9 @@ async function onDdPlay() {
     const ts = parseInt(r.headers.get("x-avnight-time"), 10);
     const plain = await videoCryptDecrypt(ts * 1000, await r.text());
     const info = JSON.parse(plain); const vd = info.video || {};
-    const m3u8 = (vd.sources && (vd.sources["240"] || vd.sources["480"])) || "";
+    // 清晰度优先: 480p > 240p (实测 480 与 240 均真实可用)
+    const srcs = vd.sources || {};
+    const m3u8 = srcs["480"] || srcs["240"] || "";
     if (!m3u8) { $D("dd-pstat").textContent = "未获取到播放地址"; return; }
     $D("dd-pstat").textContent = "播放地址已获取, 正在加载…";
     // 经 Worker 取 m3u8 并重写分片/密钥 URL 为 Worker 代理(跨域 CORS)
