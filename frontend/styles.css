@@ -349,8 +349,7 @@ img { border: 0 !important; outline: 0 !important; box-shadow: none !important; 
 /* 详情页底部复用 dubVideoCard: 卡内 cv 图 277x184 */
 .dd-item .dd-vcard { width: 277px; border-radius: 10px; overflow: hidden;
   background: var(--bg-elev2); border: 1px solid var(--border); transition: border-color .15s; }
-.dd-item:hover .dd-vcard, .dd-item.active .dd-vcard { border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent) inset; }
+.dd-item:hover .dd-vcard, .dd-item.active .dd-vcard { border-color: var(--accent); }   /* 单层黄框(去inset shadow避免重叠双线) */
 .dd-item .dd-vcard .cv-img { width: 277px; height: 184px; border-radius: 0; }
 .dd-item .dd-vcard .cv-title { display: block; padding: 8px 9px; font-size: 12.5px; color: var(--text);
   line-height: 1.4; word-break: break-word; -webkit-line-clamp: unset; overflow: visible; }
