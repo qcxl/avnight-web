@@ -319,11 +319,24 @@ async function coverBlob(rawUrl) {
 async function setCover(img, fb, rawUrl) {
   try {
     const blob = await coverBlob(rawUrl);
-    if (blob && blob.size > 0) { img.src = URL.createObjectURL(blob); img.style.display = "block"; return; }
+    if (blob && blob.size > 0) { img.src = URL.createObjectURL(blob); img.style.display = "block"; if (fb) fb.style.display = "none"; return; }
   } catch (_) {}
-  // 失败: 移除残留 img(否则浏览器渲染默认白/破图占位), 只留深色圆角占位(fb)
-  if (img && img.parentNode) img.parentNode.removeChild(img);
+  // 失败: 清空 src(防白/破图占位), 保留 img 元素但隐藏, 显示深色占位 fb
+  if (img) { img.removeAttribute("src"); img.style.display = "none"; }
   if (fb) fb.style.display = "flex";
+}
+
+/* 播放器封面: 三保险(coverBlob解码 + onload校验naturalWidth + onerror + 3s超时), 绝不空白/破图 */
+function ddCover(url) {
+  const im = $D("dd-cover"), fb = $D("dd-coverfb"), cw = $D("dd-coverwrap");
+  cw.style.display = "flex"; fb.style.display = "flex";
+  im.removeAttribute("src"); im.style.display = "none";
+  if (!url) return;
+  const gotoFb = () => { im.style.display = "none"; fb.style.display = "flex"; };
+  im.onload = () => { if (im.naturalWidth > 0) { im.style.display = "block"; fb.style.display = "none"; } else gotoFb(); };
+  im.onerror = () => gotoFb();
+  setCover(im, fb, url);
+  setTimeout(() => { if (im.style.display !== "block" || im.naturalWidth === 0) gotoFb(); }, 3000);
 }
 
 /* ===== AI中配 Tab 专门渲染(chinese_dubbing) ===== */
@@ -604,8 +617,7 @@ function openDubbingDetail(colCode, vcode, cover) {
   $D("dd-playbtn").style.display = "flex";
   $D("dd-pstat").textContent = "";
   // 播放器显示被点击视频封面
-  const cw = $D("dd-coverwrap"); cw.style.display = "flex";
-  setCover($D("dd-cover"), $D("dd-coverfb"), cover || "");
+  ddCover(cover || "");
   // 清空上一视频残留(标题/你可能喜欢/交替循环/精彩片段), 避免新数据到达前显示旧内容
   $D("dd-vtitle").textContent = "";
   $D("dd-carousel").innerHTML = "";
@@ -709,7 +721,7 @@ async function switchDetailVideo(v) {
   DD.activeVcode = v.code; DD.targetVcode = v.code; DD.cover = v.cover64 || null;
   DD_SUGG = null;                      // 强制重新拉取新视频的 suggestions
   resetPlayer();
-  const cw = $D("dd-coverwrap"); cw.style.display = "flex"; setCover($D("dd-cover"), $D("dd-coverfb"), v.cover64 || "");
+  ddCover(v.cover64 || "");
   promptPlay(v.code);
   window.scrollTo(0, 0);
   $D("dd-vtitle").textContent = v.title || "";          // 先用卡片标题占位
@@ -770,7 +782,7 @@ function renderDdSide(videos) {
     const card = dubVideoCard(v, { cls: "dd-vcard", onClick: () => {
       DD.activeVcode = v.code; DD.cover = v.cover64 || null;
       resetPlayer();                                   // 切卡: 释放旧播放资源/封面
-      const cw = $D("dd-coverwrap"); cw.style.display = "flex"; setCover($D("dd-cover"), $D("dd-coverfb"), v.cover64 || "");
+      ddCover(v.cover64 || "");
       renderDdSide(videos); promptPlay(v.code);
     }});
     wrap.appendChild(card); box.appendChild(wrap);
