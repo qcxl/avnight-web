@@ -606,8 +606,7 @@ function openDubbingDetail(colCode, vcode, cover) {
   // 播放器显示被点击视频封面
   const cw = $D("dd-coverwrap"); cw.style.display = "flex";
   setCover($D("dd-cover"), $D("dd-coverfb"), cover || "");
-  $D("dd-side").innerHTML = '<div style="color:var(--text-dim);padding:20px;font-size:13px">加载中…</div>';
-  initDdTabs(vcode);
+  initDdTabs();
   loadDdInfo(colCode);
 }
 
