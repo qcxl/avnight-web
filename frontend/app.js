@@ -679,7 +679,7 @@ function openDubbingDetail(colCode, vcode, cover, replace) {
 /* ===== 详情页 双Tab(视频/撸点助手) + suggestions 内容 ===== */
 let DD_SUGG = null;   // 当前视频 suggestions 缓存 {code, data}
 function initDdTabs() {
-  const bd = $D("dd-body");
+  const bd = document.querySelector(".dd-body");
   if (bd && !bd.dataset.lazy) {
     bd.dataset.lazy = "1";
     bd.addEventListener("scroll", () => {
