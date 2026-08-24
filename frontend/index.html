@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AVNight</title>
-<link rel="stylesheet" href="styles.css?v=33">
+<link rel="stylesheet" href="styles.css?v=34">
 </head>
 <body>
 <header class="topbar">
@@ -95,7 +95,7 @@
 <script src="vendor/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-md5@0.7.3/build/md5.min.js"></script>
-<script src="app.js?v=32"></script>
+<script src="app.js?v=34"></script>
 <!-- 视频详情页 overlay -->
 <div id="dub-detail" class="dub-detail" style="display:none;">
   <button class="dd-back" id="dd-back">&#8592; 返回</button>
@@ -124,6 +124,14 @@
     <section class="dd-tabbody" id="dd-tab-lubit" style="display:none;">
       <div class="grid-load">敬请期待…</div>
     </section>
+  </div>
+</div>
+<!-- 功能待开发 覆盖层 -->
+<div id="wip-overlay" class="wip-overlay" style="display:none;">
+  <div class="wip-box">
+    <div class="wip-icon">&#128640;</div>
+    <div class="wip-text">功能待开发</div>
+    <button class="wip-back" id="wip-back">返 回</button>
   </div>
 </div>
 </body>

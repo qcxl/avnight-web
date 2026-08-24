@@ -694,16 +694,66 @@ function mixCard(mx) {
   const tot = document.createElement("span"); tot.className = "dd-mix-total"; tot.textContent = (mx.total != null ? mx.total : "") + "个视频";
   md.appendChild(tot); el.appendChild(md);
   const t = document.createElement("div"); t.className = "dd-mix-title"; t.textContent = mx.title || ""; el.appendChild(t);
+  el.onclick = () => openWip();
   return el;
 }
+function openWip() { $D("wip-overlay").style.display = "flex"; }
 
-function switchDetailVideo(v) {
-  DD.activeVcode = v.code; DD.cover = v.cover64 || null;
+async function switchDetailVideo(v) {
+  DD.activeVcode = v.code; DD.targetVcode = v.code; DD.cover = v.cover64 || null;
+  DD_SUGG = null;                      // 强制重新拉取新视频的 suggestions
   resetPlayer();
   const cw = $D("dd-coverwrap"); cw.style.display = "flex"; setCover($D("dd-cover"), $D("dd-coverfb"), v.cover64 || "");
   promptPlay(v.code);
   window.scrollTo(0, 0);
-  loadSuggestions(v.code).then(() => renderVideoTab());
+  $D("dd-vtitle").textContent = v.title || "";          // 先用卡片标题占位
+  // 并行重拉: info(校验播放源/取正式标题) + suggestions + highlight
+  try {   // info: 解密拿 title/sources 状态
+    const r = await toFetch("/proxy/v3/video/" + encodeURIComponent(v.code) + "/info?cdn=c", { headers: { "accept": "application/json" } });
+    if (r.ok) {
+      const ts = parseInt(r.headers.get("x-avnight-time"), 10);
+      try {
+        const vd = (JSON.parse(await videoCryptDecrypt(ts * 1000, await r.text())) || {}).video || {};
+        if (vd.title) $D("dd-vtitle").textContent = vd.title;
+        DD.infoSources = vd.sources || {};
+      } catch (_) {}
+    }
+  } catch (_) {}
+  await loadSuggestions(v.code);       // 新 code 重拉(缓存已清)
+  renderVideoTab();                    // 整页刷新(标题/你可能喜欢/交替循环)
+  loadHighlights(v.code);              // highlight?next=0 拉取并渲染精彩片段区块
+}
+
+/* highlight?next=0 → 精彩片段横滑区块(无数据隐藏) */
+let DD_HL = null;
+async function loadHighlights(code) {
+  let list = [];
+  try {
+    const r = await toFetch("/proxy/v3/video/" + encodeURIComponent(code) + "/highlight?next=0", { headers: { "accept": "application/json" } });
+    if (r.ok) {
+      const ct = r.headers.get("content-type") || "";
+      if (ct.includes("json")) { const j = await r.json(); list = j.data || j.videos || j.highlights || []; }
+      else {
+        const ts = parseInt(r.headers.get("x-avnight-time"), 10);
+        if (!isNaN(ts)) { const j = JSON.parse(await videoCryptDecrypt(ts * 1000, await r.text())); list = (j.data || j.videos || j.highlights || []); }
+      }
+    }
+  } catch (_) {}
+  if (!list.length) { try { const j = await (await fetch("data/video/videoHighlight.json")).json(); list = j.data || []; } catch (_) {} }
+  DD_HL = { code, list };
+  renderHighlight(list);
+}
+function renderHighlight(list) {
+  let blk = document.getElementById("dd-hl-block");
+  if (!list || !list.length) { if (blk) blk.remove(); return; }
+  if (!blk) {
+    blk = document.createElement("div"); blk.id = "dd-hl-block"; blk.className = "dd-block";
+    blk.innerHTML = '<div class="dd-btitle">精彩片段</div><div class="dd-hscroll" id="dd-hl-scroll"></div>';
+    const anchor = $D("dd-carousel").parentElement;             // 插在"你可能喜欢"块后
+    anchor.parentElement.insertBefore(blk, anchor.nextSibling);
+  }
+  const hs = blk.querySelector("#dd-hl-scroll"); hs.innerHTML = "";
+  list.forEach((v) => hs.appendChild(dubVideoCard(v, { onClick: () => switchDetailVideo(v) })));
 }
 
 function renderDdSide(videos) {
@@ -745,10 +795,10 @@ async function onDdPlay() {
     const ts = parseInt(r.headers.get("x-avnight-time"), 10);
     const plain = await videoCryptDecrypt(ts * 1000, await r.text());
     const info = JSON.parse(plain); const vd = info.video || {};
-    // 清晰度优先: 480p > 240p (实测 480 与 240 均真实可用)
+    // 清晰度优先: 480 > 240 > 任意非空源(兜底)
     const srcs = vd.sources || {};
-    const m3u8 = srcs["480"] || srcs["240"] || "";
-    if (!m3u8) { $D("dd-pstat").textContent = "未获取到播放地址"; return; }
+    const m3u8 = srcs["480"] || srcs["240"] || (Object.values(srcs).find((x) => !!x) || "");
+    if (!m3u8) { $D("dd-pstat").textContent = "该视频暂无可用播放源"; $D("dd-playbtn").style.display = "flex"; return; }
     $D("dd-pstat").textContent = "播放地址已获取, 正在加载…";
     // 经 Worker 取 m3u8 并重写分片/密钥 URL 为 Worker 代理(跨域 CORS)
     const m3u8Text = await (await toFetch(playProxyUrl(m3u8))).text();
@@ -779,6 +829,7 @@ function closeDubbingDetail() {
 document.addEventListener("DOMContentLoaded", () => {
   const back = $D("dd-back"); if (back) back.onclick = closeDubbingDetail;
   const pb = $D("dd-playbtn"); if (pb) pb.onclick = onDdPlay;
+  const wipb = $D("wip-back"); if (wipb) wipb.onclick = () => { $D("wip-overlay").style.display = "none"; };
   const dtabs = $D("dd-tabs");
   if (dtabs) [...dtabs.querySelectorAll(".dd-tab")].forEach((b) => b.onclick = () => {
     [...dtabs.querySelectorAll(".dd-tab")].forEach((x) => x.classList.toggle("active", x === b));
