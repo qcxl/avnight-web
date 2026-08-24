@@ -660,7 +660,7 @@ async function renderVideoTab() {
   const carousel = sg.carousel_videos || [], mixes = sg.mixes || [], recommend = sg.recommend_videos || [];
   // 你可能喜欢: carousel 横滑
   const cbox = $D("dd-carousel"); cbox.innerHTML = "";
-  carousel.forEach((v) => cbox.appendChild(dubVideoCard(v, { onClick: () => switchDetailVideo(v) })));
+  carousel.forEach((v) => cbox.appendChild(dubVideoCard(v, { onClick: () => openDubbingDetail(v.code, v.code, v.cover64 || '') })));
   // 交替循环: recommend 每20条 Grid ⊕ "热播播单" title + mixes 5条横滑, 直到数据用尽
   const alt = $D("dd-altwrap"); alt.innerHTML = "";
   const CH = 20, MH = 5;
@@ -668,7 +668,7 @@ async function renderVideoTab() {
   while (ri < recommend.length || mi < mixes.length) {
     const grid = document.createElement("div"); grid.className = "dd-alt-grid";
     recommend.slice(ri, ri + CH).forEach((v) => {
-      const card = dubVideoCard(v, { onClick: () => switchDetailVideo(v) });
+      const card = dubVideoCard(v, { onClick: () => openDubbingDetail(v.code, v.code, v.cover64 || '') });
       card.style.width = ""; card.classList.add("grid-card");
       grid.appendChild(card);
     });
@@ -759,7 +759,7 @@ function renderHighlight(list) {
     anchor.parentElement.insertBefore(blk, anchor.nextSibling);
   }
   const hs = blk.querySelector("#dd-hl-scroll"); hs.innerHTML = "";
-  list.forEach((v) => hs.appendChild(dubVideoCard(v, { onClick: () => switchDetailVideo(v) })));
+  list.forEach((v) => hs.appendChild(dubVideoCard(v, { onClick: () => openDubbingDetail(v.code, v.code, v.cover64 || '') })));
 }
 
 function renderDdSide(videos) {
