@@ -804,7 +804,7 @@ async function onDdPlay() {
     // 清晰度优先: 480 > 240 > 任意非空源(兜底)
     const srcs = vd.sources || {};
     const m3u8 = srcs["480"] || srcs["240"] || (Object.values(srcs).find((x) => !!x) || "");
-    if (!m3u8) { $D("dd-pstat").textContent = "该视频暂无可用播放源"; $D("dd-playbtn").style.display = "flex"; return; }
+    if (!m3u8) { $D("dd-pstat").textContent = "该视频暂无播放源 (服务端未提供, 免费接口不含此类短剧)"; $D("dd-playbtn").style.display = "flex"; return; }
     $D("dd-pstat").textContent = "播放地址已获取, 正在加载…";
     // 经 Worker 取 m3u8 并重写分片/密钥 URL 为 Worker 代理(跨域 CORS)
     const m3u8Text = await (await toFetch(playProxyUrl(m3u8))).text();
