@@ -282,11 +282,12 @@ async function coverBlob(rawUrl) {
   const primary = liveDomainFor(rawUrl);
   const hosts = [primary, ...LIVE_DOMS.filter((h) => h !== primary), new URL(rawUrl).host];
   for (const h of hosts) {
+    if (COVER_BAD_HOST.has(h)) continue;   // 已知挂的域名跳过
     try {
       const u = rawUrl.replace(/^https?:\/\/[^\/]+/, "https://" + h);
       let r = null;
-      try { r = await fetchOnce(u); } catch (_) { r = await fetchOnce(u); } // 网络瞬时失败重试一次
-      if (!r) continue;
+      try { r = await fetchOnce(u); } catch (_) { try { r = await fetchOnce(u); } catch (_2) {} } // 重试一次
+      if (!r) { COVER_BAD_HOST.add(h); continue; }   // 挂的域名记入黑名单
       const buf = new Uint8Array(await r.arrayBuffer());
       // 直接图片流
       if ((buf[0] === 0xff && buf[1] === 0xd8) || (buf[0] === 0x89 && buf[1] === 0x50) ||
@@ -315,6 +316,48 @@ async function coverBlob(rawUrl) {
     } catch (_) {}
   }
   return null;
+}
+/* ===== 封面懒加载 + 缓存 (性能优化) ===== */
+const COVER_BLOB = new Map();        // rawUrl -> Blob (同图只解码一次)
+const COVER_BAD_HOST = new Set();    // 已确认挂掉的封面域名(不再重试)
+const LAZY_OBS = new IntersectionObserver((entries) => {
+  entries.forEach((e) => {
+    if (e.isIntersecting) {
+      const t = e.target;
+      LAZY_OBS.unobserve(t);
+      loadCoverEl(t);
+    }
+  });
+}, { rootMargin: "240px 0px" });     // 提前 240px 预载
+/* 兼容兜底: scroll/resize + 定时轮询(IntersectionObserver 在部分环境不触发) */
+let _lazyT = null;
+function onScrollLazy() {
+  if (_lazyT) return;
+  _lazyT = setTimeout(() => { _lazyT = null;
+    document.querySelectorAll("img[data-cover]").forEach((img) => {
+      const r = img.getBoundingClientRect();
+      if (r.top < innerHeight + 240 && r.bottom > -240) loadCoverEl(img);
+    });
+  }, 120);
+}
+document.addEventListener("scroll", onScrollLazy, { passive: true, capture: true });
+window.addEventListener("scroll", onScrollLazy, { passive: true });
+window.addEventListener("resize", onScrollLazy);
+const _lazyTick = setInterval(onScrollLazy, 600);   // 动态渲染后也被扫到(廉价)
+async function loadCoverEl(img) {
+  const url = img.dataset.cover;
+  if (!url) return;
+  img.dataset.cover = "";
+  let blob = COVER_BLOB.get(url);
+  if (!blob) {
+    try { blob = await coverBlob(url); } catch (_) { blob = null; }
+    if (blob && blob.size > 0) COVER_BLOB.set(url, blob);
+  }
+  if (blob && blob.size > 0) {
+    img.src = URL.createObjectURL(blob);          // onload 触发 display block
+  } else {
+    try { if (img.parentNode) img.parentNode.removeChild(img); } catch (_) {}
+  }
 }
 async function setCover(img, fb, rawUrl) {
   try {
@@ -360,8 +403,9 @@ function dubMedia(url, fbCls, title) {
     const img = document.createElement("img"); img.alt = ""; img.style.display = "none";  // 加载中不显示(避免白框)
     img.onload = () => { img.style.display = "block"; fb.style.display = "none"; };       // 就绪后才显示图
     img.onerror = () => { try { img.parentNode.removeChild(img); } catch (_) {} };        // 失败移除, fb占位保持
+    img.dataset.cover = url;
     box.appendChild(img);
-    setCover(img, fb, url);
+    LAZY_OBS.observe(img);        // 进入可视区域才真正解码加载
   }
   return box;
 }
@@ -397,7 +441,8 @@ function collectionItem(it) {
     const img = document.createElement("img"); img.alt = ""; img.style.display = "none";  // 加载中不显示(避免白框)
     img.onload = () => { img.style.display = "block"; fb.style.display = "none"; };
     img.onerror = () => { try { img.parentNode.removeChild(img); } catch (_) {} };
-    m.appendChild(img); setCover(img, fb, it.cover64);
+    img.dataset.cover = it.cover64;
+    m.appendChild(img); LAZY_OBS.observe(img);   // 进视口才加载
   }
   head.appendChild(m);
   const info = document.createElement("div"); info.className = "ci-info";
