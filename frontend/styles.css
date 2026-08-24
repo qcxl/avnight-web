@@ -420,3 +420,5 @@ img { border: 0 !important; outline: 0 !important; box-shadow: none !important; 
   box-sizing: border-box !important;
 }
 /* 若 -webkit-box 仍不生效, 用 max-height 物理限制 2 行(不再出现第 3 行) */
+/* 加载占位(详情页 carousel 推荐加载中) */
+.dd-plh { color: var(--text-faint); font-size: 13px; padding: 12px 2px; letter-spacing: .5px; }
