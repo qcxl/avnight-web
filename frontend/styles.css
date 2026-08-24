@@ -383,9 +383,10 @@ img { border: 0 !important; outline: 0 !important; box-shadow: none !important; 
   border-left: 3px solid var(--accent); padding-left: 9px; }
 .dd-hscroll { display: flex; gap: 12px; overflow-x: auto; padding: 2px 2px 6px; scrollbar-width: none; }
 .dd-hscroll::-webkit-scrollbar { display: none; height: 0; }
-.dd-alt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; }
-.dd-alt-grid .grid-card, .dd-alt-grid .ci-video { width: auto !important; min-width: 0; }
-.dd-alt-grid .grid-card .cv-img, .dd-alt-grid .ci-video .cv-img { width: 100% !important; height: 184px; }
+/* grid 与横滑卡尺寸统一: 固定 277 宽(与横滑卡一致), 列自适应数量, 左对齐流式 */
+.dd-alt-grid { display: flex; flex-wrap: wrap; gap: 16px; }
+.dd-alt-grid .grid-card, .dd-alt-grid .ci-video { width: 277px !important; min-width: 0; }
+.dd-alt-grid .grid-card .cv-img, .dd-alt-grid .ci-video .cv-img { width: 277px !important; height: 184px; }
 .dd-alt-grid .grid-card:hover { border-color: var(--accent); }
 .dd-mix-card { position: relative; flex: none; width: 240px; border-radius: 10px; overflow: hidden;
   background: var(--bg-elev2); border: 1px solid var(--border); cursor: pointer; }

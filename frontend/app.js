@@ -606,6 +606,12 @@ function openDubbingDetail(colCode, vcode, cover) {
   // 播放器显示被点击视频封面
   const cw = $D("dd-coverwrap"); cw.style.display = "flex";
   setCover($D("dd-cover"), $D("dd-coverfb"), cover || "");
+  // 清空上一视频残留(标题/你可能喜欢/交替循环/精彩片段), 避免新数据到达前显示旧内容
+  $D("dd-vtitle").textContent = "";
+  $D("dd-carousel").innerHTML = "";
+  $D("dd-altwrap").innerHTML = "";
+  const hl = document.getElementById("dd-hl-block"); if (hl) hl.remove();
+  DD_SUGG = null;
   initDdTabs();
   loadDdInfo(colCode);
 }
