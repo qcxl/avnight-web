@@ -607,7 +607,28 @@ function openDubbingDetail(colCode, vcode, cover) {
   const cw = $D("dd-coverwrap"); cw.style.display = "flex";
   setCover($D("dd-cover"), $D("dd-coverfb"), cover || "");
   $D("dd-side").innerHTML = '<div style="color:var(--text-dim);padding:20px;font-size:13px">加载中…</div>';
+  initDdTabs(vcode);
   loadDdInfo(colCode);
+}
+
+/* ===== 详情页 双Tab(视频/撸点助手) + suggestions 内容 ===== */
+let DD_SUGG = null;   // 当前视频 suggestions 缓存 {code, data}
+function initDdTabs() {
+  const tabs = $D("dd-tabs");
+  [...tabs.querySelectorAll(".dd-tab")].forEach((b) => b.classList.toggle("active", b.dataset.t === "video"));
+  $D("dd-tab-video").style.display = "flex";
+  $D("dd-tab-lubit").style.display = "none";
+}
+async function loadSuggestions(code) {
+  if (DD_SUGG && DD_SUGG.code === code) return DD_SUGG.data;
+  let data = null;
+  try {
+    const r = await toFetch("/proxy/v3/video/" + encodeURIComponent(code) + "/suggestions", { headers: { "accept": "application/json" } });
+    if (r.ok) data = await r.json();
+  } catch (_) {}
+  if (!data) data = await (await fetch("data/video/videoSuggestions.json")).json().catch(() => ({}));
+  DD_SUGG = { code, data: data || {} };
+  return DD_SUGG.data;
 }
 
 async function loadDdInfo(colCode) {
@@ -623,6 +644,68 @@ async function loadDdInfo(colCode) {
   }
   DD.videos = videos;
   renderDdSide(videos);
+  renderVideoTab();
+}
+
+async function renderVideoTab() {
+  const code = DD.targetVcode || (DD.videos[0] && DD.videos[0].code) || DD.col;
+  // 标题: info 接口当前视频的 title
+  const cur = DD.videos.find((v) => v.code === code);
+  $D("dd-vtitle").textContent = (cur && cur.title) || "";
+  const sg = await loadSuggestions(code);
+  const carousel = sg.carousel_videos || [], mixes = sg.mixes || [], recommend = sg.recommend_videos || [];
+  // 你可能喜欢: carousel 横滑
+  const cbox = $D("dd-carousel"); cbox.innerHTML = "";
+  carousel.forEach((v) => cbox.appendChild(dubVideoCard(v, { onClick: () => switchDetailVideo(v) })));
+  // 交替循环: recommend 每20条 Grid ⊕ "热播播单" title + mixes 5条横滑, 直到数据用尽
+  const alt = $D("dd-altwrap"); alt.innerHTML = "";
+  const CH = 20, MH = 5;
+  let ri = 0, mi = 0, round = 0;
+  while (ri < recommend.length || mi < mixes.length) {
+    const grid = document.createElement("div"); grid.className = "dd-alt-grid";
+    recommend.slice(ri, ri + CH).forEach((v) => {
+      const card = dubVideoCard(v, { onClick: () => switchDetailVideo(v) });
+      card.style.width = ""; card.classList.add("grid-card");
+      grid.appendChild(card);
+    });
+    ri += CH;
+    if (grid.children.length) alt.appendChild(grid);
+    if (mi < mixes.length) {
+      const blk = document.createElement("div"); blk.className = "dd-block"; blk.style.marginTop = "16px";
+      const bt = document.createElement("div"); bt.className = "dd-btitle"; bt.textContent = "热播播单";
+      const hs = document.createElement("div"); hs.className = "dd-hscroll";
+      mixes.slice(mi, mi + MH).forEach((mx) => hs.appendChild(mixCard(mx)));
+      mi += MH;
+      blk.appendChild(bt); blk.appendChild(hs); alt.appendChild(blk);
+    }
+    round++;
+    if (round > 30) break;   // 安全上限
+  }
+}
+
+function mixCard(mx) {
+  const el = document.createElement("div"); el.className = "dd-mix-card"; el.title = mx.title || "";
+  const md = document.createElement("div"); md.className = "dd-mix-media";
+  const fb = document.createElement("div"); fb.style.cssText = "position:absolute;inset:0;background:linear-gradient(160deg,#232b3f,#0c0e13);display:none;";
+  md.appendChild(fb);
+  if (mx.cover64) { const img = document.createElement("img"); img.alt = ""; img.style.display = "none";
+    img.onload = () => { img.style.display = "block"; fb.style.display = "none"; };
+    img.onerror = () => { try { img.parentNode.removeChild(img); } catch (_) {} fb.style.display = "block"; };
+    md.appendChild(img); setCover(img, fb, mx.cover64); }
+  else { fb.style.display = "block"; }
+  const tot = document.createElement("span"); tot.className = "dd-mix-total"; tot.textContent = (mx.total != null ? mx.total : "") + "个视频";
+  md.appendChild(tot); el.appendChild(md);
+  const t = document.createElement("div"); t.className = "dd-mix-title"; t.textContent = mx.title || ""; el.appendChild(t);
+  return el;
+}
+
+function switchDetailVideo(v) {
+  DD.activeVcode = v.code; DD.cover = v.cover64 || null;
+  resetPlayer();
+  const cw = $D("dd-coverwrap"); cw.style.display = "flex"; setCover($D("dd-cover"), $D("dd-coverfb"), v.cover64 || "");
+  promptPlay(v.code);
+  window.scrollTo(0, 0);
+  loadSuggestions(v.code).then(() => renderVideoTab());
 }
 
 function renderDdSide(videos) {
@@ -698,6 +781,12 @@ function closeDubbingDetail() {
 document.addEventListener("DOMContentLoaded", () => {
   const back = $D("dd-back"); if (back) back.onclick = closeDubbingDetail;
   const pb = $D("dd-playbtn"); if (pb) pb.onclick = onDdPlay;
+  const dtabs = $D("dd-tabs");
+  if (dtabs) [...dtabs.querySelectorAll(".dd-tab")].forEach((b) => b.onclick = () => {
+    [...dtabs.querySelectorAll(".dd-tab")].forEach((x) => x.classList.toggle("active", x === b));
+    $D("dd-tab-video").style.display = b.dataset.t === "video" ? "flex" : "none";
+    $D("dd-tab-lubit").style.display = b.dataset.t === "lubit" ? "flex" : "none";
+  });
   const m = location.hash.match(/^#\/dub\/([^/]+)/);
   if (m) openDubbingDetail(decodeURIComponent(m[1]), null, "");
 });
