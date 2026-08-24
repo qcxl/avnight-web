@@ -642,8 +642,7 @@ async function loadDdInfo(colCode) {
     videos = j.videos || [];
   }
   DD.videos = videos;
-  renderDdSide(videos);
-  renderVideoTab();
+  renderVideoTab();   // 视频Tab(标题+你可能喜欢+交替循环) 取代旧右侧列表
 }
 
 async function renderVideoTab() {
