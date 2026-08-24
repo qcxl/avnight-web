@@ -653,10 +653,13 @@ function resetPlayer() {
   const v = $D("dd-video"); try { v.pause(); } catch (_) {} v.removeAttribute("src"); try { v.load(); } catch (_) {}
   DD.loadedVcode = null;
 }
-function openDubbingDetail(colCode, vcode, cover) {
+function openDubbingDetail(colCode, vcode, cover, replace) {
   $D("dub-detail").style.display = "flex";
-  if (location.hash !== "#/dub/" + encodeURIComponent(colCode))
-    history.pushState(null, "", "#/dub/" + encodeURIComponent(colCode));
+  const target = "#/dub/" + encodeURIComponent(colCode);
+  if (location.hash !== target) {
+    if (replace) history.replaceState(null, "", target);   // 关当前详情再开新(不压栈, 返回即回首页)
+    else history.pushState(null, "", target);
+  }
   DD.col = colCode; DD.targetVcode = vcode || null; DD.activeVcode = vcode || null; DD.cover = cover || null;
   resetPlayer();
   $D("dd-playbtn").style.display = "flex";
@@ -676,6 +679,13 @@ function openDubbingDetail(colCode, vcode, cover) {
 /* ===== 详情页 双Tab(视频/撸点助手) + suggestions 内容 ===== */
 let DD_SUGG = null;   // 当前视频 suggestions 缓存 {code, data}
 function initDdTabs() {
+  const bd = $D("dd-body");
+  if (bd && !bd.dataset.lazy) {
+    bd.dataset.lazy = "1";
+    bd.addEventListener("scroll", () => {
+      if (bd.scrollTop + bd.clientHeight >= bd.scrollHeight - 700) appendAltBatch();
+    }, { passive: true });
+  }
   const tabs = $D("dd-tabs");
   [...tabs.querySelectorAll(".dd-tab")].forEach((b) => b.classList.toggle("active", b.dataset.t === "video"));
   $D("dd-tab-video").style.display = "flex";
@@ -715,40 +725,50 @@ async function loadDdInfo(colCode) {
   renderVideoTab();
 }
 
-async function renderVideoTab() {
-  const code = DD.targetVcode || (DD.videos[0] && DD.videos[0].code) || DD.col;
-  // 标题: info 接口当前视频的 title
-  const cur = DD.videos.find((v) => v.code === code);
-  $D("dd-vtitle").textContent = (cur && cur.title) || "";
-  const sg = await loadSuggestions(code);
-  const carousel = sg.carousel_videos || [], mixes = sg.mixes || [], recommend = sg.recommend_videos || [];
-  // 你可能喜欢: carousel 横滑
-  const cbox = $D("dd-carousel"); cbox.innerHTML = "";
-  carousel.forEach((v) => cbox.appendChild(dubVideoCard(v, { onClick: () => openDubbingDetail(v.code, v.code, v.cover64 || '') })));
-  // 交替循环: recommend 每20条 Grid ⊕ "热播播单" title + mixes 5条横滑, 直到数据用尽
-  const alt = $D("dd-altwrap"); alt.innerHTML = "";
-  const CH = 20, MH = 5;
-  let ri = 0, mi = 0, round = 0;
-  while (ri < recommend.length || mi < mixes.length) {
+const ALT_CH = 20, ALT_MH = 5, ALT_BATCH = 3;   // 每批 3 组(约60卡)
+let ALT = null;                                    // 交替循环分页状态
+function renderCarousel(cbox, list) {
+  cbox.innerHTML = "";
+  (list || []).forEach((v) => cbox.appendChild(dubVideoCard(v, { onClick: () => openDubbingDetail(v.code, v.code, v.cover64 || "", true) })));
+}
+function initAlt(recommend, mixes) {
+  const alt = $D("dd-altwrap"); alt.innerHTML = ""; alt.scrollTop = 0;
+  ALT = { recommend, mixes, ri: 0, mi: 0, done: false, busy: false };
+  alt.scrollTop = 0;
+}
+function appendAltBatch() {
+  const alt = $D("dd-altwrap");
+  if (!alt || !ALT || ALT.done || ALT.busy) return; ALT.busy = true;
+  for (let b = 0; b < ALT_BATCH && (ALT.ri < ALT.recommend.length || ALT.mi < ALT.mixes.length); b++) {
     const grid = document.createElement("div"); grid.className = "dd-alt-grid";
-    recommend.slice(ri, ri + CH).forEach((v) => {
-      const card = dubVideoCard(v, { onClick: () => openDubbingDetail(v.code, v.code, v.cover64 || '') });
-      card.style.width = ""; card.classList.add("grid-card");
-      grid.appendChild(card);
+    ALT.recommend.slice(ALT.ri, ALT.ri + ALT_CH).forEach((v) => {
+      const card = dubVideoCard(v, { onClick: () => openDubbingDetail(v.code, v.code, v.cover64 || "", true) });
+      card.style.width = ""; card.classList.add("grid-card"); grid.appendChild(card);
     });
-    ri += CH;
+    ALT.ri += ALT_CH;
     if (grid.children.length) alt.appendChild(grid);
-    if (mi < mixes.length) {
+    if (ALT.mi < ALT.mixes.length) {
       const blk = document.createElement("div"); blk.className = "dd-block"; blk.style.marginTop = "16px";
       const bt = document.createElement("div"); bt.className = "dd-btitle"; bt.textContent = "热播播单";
       const hs = document.createElement("div"); hs.className = "dd-hscroll";
-      mixes.slice(mi, mi + MH).forEach((mx) => hs.appendChild(mixCard(mx)));
-      mi += MH;
-      blk.appendChild(bt); blk.appendChild(hs); alt.appendChild(blk);
+      ALT.mixes.slice(ALT.mi, ALT.mi + ALT_MH).forEach((mx) => hs.appendChild(mixCard(mx)));
+      ALT.mi += ALT_MH; blk.appendChild(bt); blk.appendChild(hs); alt.appendChild(blk);
     }
-    round++;
-    if (round > 30) break;   // 安全上限
   }
+  ALT.busy = false;
+  if (ALT.ri >= ALT.recommend.length && ALT.mi >= ALT.mixes.length) ALT.done = true;
+}
+async function renderVideoTab() {
+  const code = DD.targetVcode || (DD.videos[0] && DD.videos[0].code) || DD.col;
+  const cur = DD.videos.find((v) => v.code === code);
+  $D("dd-vtitle").textContent = (cur && cur.title) || "";
+  // 立即渲染"你可能喜欢"(fast), suggestions 后异步刷新+交替循环分批懒渲染
+  renderCarousel($D("dd-carousel"), cur ? [cur] : []);
+  let sg = {};
+  try { sg = (await loadSuggestions(code)) || {}; } catch (_) {}
+  renderCarousel($D("dd-carousel"), sg.carousel_videos || []);
+  initAlt(sg.recommend_videos || [], sg.mixes || []);
+  appendAltBatch();   // 首批 3 组
 }
 
 function mixCard(mx) {
@@ -791,7 +811,6 @@ async function switchDetailVideo(v) {
   } catch (_) {}
   await loadSuggestions(v.code);       // 新 code 重拉(缓存已清)
   renderVideoTab();                    // 整页刷新(标题/你可能喜欢/交替循环)
-  loadHighlights(v.code);              // highlight?next=0 拉取并渲染精彩片段区块
 }
 
 /* highlight?next=0 → 精彩片段横滑区块(无数据隐藏) */
