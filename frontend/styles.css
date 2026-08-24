@@ -352,8 +352,10 @@ img { border: 0 !important; outline: 0 !important; box-shadow: none !important; 
   background: var(--bg-elev2); border: 1px solid var(--border); transition: border-color .15s; }
 .dd-item:hover .dd-vcard, .dd-item.active .dd-vcard { border-color: var(--accent); }   /* 单层黄框(去inset shadow避免重叠双线) */
 .dd-item .dd-vcard .cv-img { width: 277px; height: 184px; border-radius: 0; }
-.dd-item .dd-vcard .cv-title { display: block; padding: 8px 9px; font-size: 12.5px; color: var(--text);
-  line-height: 1.4; word-break: break-word; -webkit-line-clamp: unset; overflow: visible; }
+.dd-item .dd-vcard .cv-title { display: block; padding: 9px 9px; font-size: 12.5px; color: var(--text);
+  line-height: 1.4; word-break: break-word;
+  height: calc(12.5px * 1.4 * 2 + 18px); display: -webkit-box; -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical; overflow: hidden; }
 .dd-item-media { position: relative; width: 100%; height: 162px; background: #0c0e13; overflow: hidden; }
 .dd-item-media img { width: 100%; height: 100%; object-fit: cover; display: block; border: 0 !important; }
 .dd-item-media .dd-fb { position: absolute; inset: 0; background: linear-gradient(160deg,#232b3f,#0c0e13); display: flex;
@@ -381,7 +383,10 @@ img { border: 0 !important; outline: 0 !important; box-shadow: none !important; 
   border-left: 3px solid var(--accent); padding-left: 9px; }
 .dd-hscroll { display: flex; gap: 12px; overflow-x: auto; padding: 2px 2px 6px; scrollbar-width: none; }
 .dd-hscroll::-webkit-scrollbar { display: none; height: 0; }
-.dd-alt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+.dd-alt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; }
+.dd-alt-grid .grid-card, .dd-alt-grid .ci-video { width: auto !important; min-width: 0; }
+.dd-alt-grid .grid-card .cv-img, .dd-alt-grid .ci-video .cv-img { width: 100% !important; height: 184px; }
+.dd-alt-grid .grid-card:hover { border-color: var(--accent); }
 .dd-mix-card { position: relative; flex: none; width: 240px; border-radius: 10px; overflow: hidden;
   background: var(--bg-elev2); border: 1px solid var(--border); cursor: pointer; }
 .dd-mix-card:hover { border-color: var(--accent); }
