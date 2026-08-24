@@ -612,7 +612,7 @@ function openDubbingDetail(colCode, vcode, cover) {
   $D("dub-detail").style.display = "flex";
   if (location.hash !== "#/dub/" + encodeURIComponent(colCode))
     history.pushState(null, "", "#/dub/" + encodeURIComponent(colCode));
-  DD.col = colCode; DD.targetVcode = vcode || null; DD.activeVcode = null; DD.cover = cover || null;
+  DD.col = colCode; DD.targetVcode = vcode || null; DD.activeVcode = vcode || null; DD.cover = cover || null;
   resetPlayer();
   $D("dd-playbtn").style.display = "flex";
   $D("dd-pstat").textContent = "";
@@ -648,19 +648,26 @@ async function loadSuggestions(code) {
   return DD_SUGG.data;
 }
 
+let DD_DETAIL_CACHE = {};   // code -> videos[] (返回恢复上一详情不白屏)
 async function loadDdInfo(colCode) {
   let videos = [];
-  try {
-    // 同源 _worker.js 实时; 失败回退本地样本
-    const r = await toFetch("/proxy/v3/chinese_dubbing/collections/" + encodeURIComponent(colCode) + "/info", { headers: { "accept": "application/json" } });
-    if (r.ok) { const j = await r.json(); videos = j.videos || []; }
-  } catch (_) {}
-  if (!videos.length) {
-    const j = await (await fetch("data/home/chineseDubbingCodeInfo.json")).json().catch(() => ({ videos: [] }));
-    videos = j.videos || [];
+  if (DD_DETAIL_CACHE[colCode]) {
+    videos = DD_DETAIL_CACHE[colCode];
+  } else {
+    try {
+      const r = await toFetch("/proxy/v3/chinese_dubbing/collections/" + encodeURIComponent(colCode) + "/info", { headers: { "accept": "application/json" } });
+      if (r.ok) { const j = await r.json(); videos = j.videos || []; }
+    } catch (_) {}
+    if (!videos.length) {
+      const j = await (await fetch("data/home/chineseDubbingCodeInfo.json")).json().catch(() => ({ videos: [] }));
+      videos = j.videos || [];
+    }
+    DD_DETAIL_CACHE[colCode] = videos;
   }
   DD.videos = videos;
-  renderVideoTab();   // 视频Tab(标题+你可能喜欢+交替循环) 取代旧右侧列表
+  if (!DD.targetVcode && videos[0]) DD.targetVcode = videos[0].code;   // 返回后 targetVcode 兜底
+  if (DD.activeVcode === null && videos[0]) DD.activeVcode = videos[0].code;
+  renderVideoTab();
 }
 
 async function renderVideoTab() {
@@ -796,8 +803,9 @@ function promptPlay(vcode) {
 }
 
 async function onDdPlay() {
-  const vcode = DD.activeVcode || DD.targetVcode; const video = $D("dd-video");
+  const vcode = DD.activeVcode || DD.targetVcode || (DD.videos && DD.videos[0] && DD.videos[0].code); const video = $D("dd-video");
   if (!vcode) { $D("dd-pstat").textContent = "请先选择要播放的视频"; $D("dd-playbtn").style.display = "flex"; return; }
+  if (DD.activeVcode !== vcode) { DD.activeVcode = vcode; if (!DD.targetVcode) DD.targetVcode = vcode; }
   $D("dd-playbtn").style.display = "none";
   // 同一视频已加载 → 不重复拉流, 直接恢复播放
   if (DD.loadedVcode === vcode && video.getAttribute && video.getAttribute("src")) {

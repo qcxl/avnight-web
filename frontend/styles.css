@@ -185,8 +185,8 @@ button { font-family: inherit; }
   background: radial-gradient(120% 120% at 20% 0%, #1a2030 0%, #0c0e13 70%);
   color: #333c4e; font-family: var(--font-display); font-size: 34px; letter-spacing: 2px;
 }
-.card-title { padding: 10px 12px 8px; font-size: 14px; color: var(--text); font-weight: 500; line-height: calc(14px * 1.4 * 2 + 18px) !important;
-  height: calc(14px * 1.4 * 2 + 18px) !important;; display: -webkit-box !important; -webkit-line-clamp: 2 !important; -webkit-box-orient: vertical !important; overflow: hidden !important; }
+.card-title { padding: 10px 12px 8px; font-size: 14px; color: var(--text); font-weight: 500; line-height: 1.4;
+  height: calc(14px * 1.4 * 2 + 18px) !important; display: -webkit-box !important; -webkit-line-clamp: 2 !important; -webkit-box-orient: vertical !important; overflow: hidden !important; }
 .card-sub { padding: 0 12px 4px; font-size: 12.5px; color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .card-code { padding: 2px 12px 10px; font-size: 12px; color: var(--accent); font-family: var(--font-mono); letter-spacing: .5px; }
 .card-sub + .card-code { padding-top: 0; }
@@ -253,8 +253,8 @@ button { font-family: inherit; }
 .hmedia-card .hm-fb { position: absolute; inset: 0; display: flex; align-items: flex-end; padding: 10px;
   background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,.7)); }
 .hmedia-card .hm-fb span { font-size: 12px; color: #fff; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.hmedia-card .hm-title { padding: 9px 10px; font-size: 13px; color: var(--text); line-height: calc(13px * 1.4 * 2 + 18px) !important;
-  height: calc(13px * 1.4 * 2 + 18px) !important;; display: -webkit-box !important; -webkit-line-clamp: 2 !important;
+.hmedia-card .hm-title { padding: 9px 10px; font-size: 13px; color: var(--text); line-height: 1.4;
+  height: calc(13px * 1.4 * 2 + 18px) !important; display: -webkit-box !important; -webkit-line-clamp: 2 !important;
   -webkit-box-orient: vertical !important; overflow: hidden !important; box-sizing: border-box; }
 .hero-gap { height: 14px; }
 
@@ -287,8 +287,8 @@ button { font-family: inherit; }
 .ci-video .cv-img { height: 184px; background: #0c0e13; border-radius: 8px; overflow: hidden; position: relative; }
 .ci-video .cv-img img { width: 100%; height: 100%; object-fit: cover; display: block; border: 0; background: #0c0e13; }
 .ci-video .cv-img .cv-fb { position: absolute; inset: 0; background: linear-gradient(160deg,#232b3f,#0c0e13); }
-.ci-video .cv-title { padding: 9px 9px; font-size: 12.5px; color: var(--text); line-height: calc(12.5px * 1.4 * 2 + 18px) !important;
-  height: calc(12.5px * 1.4 * 2 + 18px) !important;; display: -webkit-box !important; -webkit-line-clamp: 2 !important;
+.ci-video .cv-title { padding: 9px 9px; font-size: 12.5px; color: var(--text); line-height: 1.4;
+  height: calc(12.5px * 1.4 * 2 + 18px) !important; display: -webkit-box !important; -webkit-line-clamp: 2 !important;
   -webkit-box-orient: vertical !important; overflow: hidden !important; box-sizing: border-box; }
 .ai-more { display: block; margin: 6px auto 20px; padding: 9px 30px; background: var(--bg-elev2);
   border: 1px solid var(--border-strong); border-radius: 8px; color: var(--text-dim); cursor: pointer; font-size: 13.5px; }
@@ -397,8 +397,8 @@ img { border: 0 !important; outline: 0 !important; box-shadow: none !important; 
 .dd-mix-media img { width: 100%; height: 100%; object-fit: cover; display: block; border: 0 !important; }
 .dd-mix-total { position: absolute; right: 5px; bottom: 5px; background: rgba(0,0,0,.55); color: #fff;
   font-size: 11px; padding: 3px 6px; border-radius: 3px; }
-.dd-mix-title { padding: 9px 9px; font-size: 12.5px; color: var(--text); line-height: calc(12.5px * 1.4 * 2 + 18px) !important;
-  height: calc(12.5px * 1.4 * 2 + 18px) !important;; display: -webkit-box !important; -webkit-line-clamp: 2 !important;
+.dd-mix-title { padding: 9px 9px; font-size: 12.5px; color: var(--text); line-height: 1.4;
+  height: calc(12.5px * 1.4 * 2 + 18px) !important; display: -webkit-box !important; -webkit-line-clamp: 2 !important;
   -webkit-box-orient: vertical !important; overflow: hidden !important; box-sizing: border-box; }
 
 /* 功能待开发覆盖层 */
@@ -410,8 +410,8 @@ img { border: 0 !important; outline: 0 !important; box-shadow: none !important; 
   border-radius: 8px; color: var(--text); cursor: pointer; font-size: 14px; }
 .wip-back:hover { border-color: var(--accent); }
 
-/* 兜底: 强制所有卡标题 2 行截断(display:-webkit-box 可能被覆盖成 flow-root 导致 clamp 失效) */
-.cv-title, .dd-mix-title, .hm-title, .card-title {
+/* 统一: 所有卡标题最多2行, 超2行末尾省略号(要求) */
+.cv-title, .dd-mix-title, .hm-title, .card-title, .ci-title, .dd-item-title {
   display: -webkit-box !important;
   -webkit-line-clamp: 2 !important;
   -webkit-box-orient: vertical !important;
@@ -419,6 +419,3 @@ img { border: 0 !important; outline: 0 !important; box-shadow: none !important; 
   box-sizing: border-box !important;
 }
 /* 若 -webkit-box 仍不生效, 用 max-height 物理限制 2 行(不再出现第 3 行) */
-.cv-title, .dd-mix-title { max-height: calc(12.5px * 1.4 * 2 + 18px) !important; }
-.hm-title { max-height: calc(13px * 1.4 * 2 + 18px) !important; }
-.card-title { max-height: calc(14px * 1.4 * 2 + 18px) !important; }
