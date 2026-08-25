@@ -906,10 +906,11 @@ async function onDdPlay() {
     if (window.Hls && Hls.isSupported()) {
       const hls = new Hls({ maxBufferLength: 60 }); DD.hls = hls;
       hls.loadSource(blobUrl); hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => { $D("dd-pstat").textContent = ""; DD.loadedVcode = vcode; video.play().catch(() => $D("dd-pstat").textContent = "请点击播放器播放"); });
+      const PREV_TXT = "预览播放中 · 完整版为奶币/VIP 内容，需购买解锁";
+      hls.on(Hls.Events.MANIFEST_PARSED, () => { $D("dd-pstat").textContent = isPreview ? PREV_TXT : ""; DD.loadedVcode = vcode; video.play().catch(() => $D("dd-pstat").textContent = "请点击播放器播放"); });
       hls.on(Hls.Events.ERROR, (e, data) => { if (data && data.fatal) $D("dd-pstat").textContent = "播放出错: " + (data.type || ""); });
     } else {
-      video.src = blobUrl; $D("dd-pstat").textContent = ""; DD.loadedVcode = vcode;
+      video.src = blobUrl; $D("dd-pstat").textContent = isPreview ? PREV_TXT : ""; DD.loadedVcode = vcode;
       video.play().catch(() => $D("dd-pstat").textContent = "请点击播放器播放");
     }
   } catch (e) { $D("dd-playbtn").style.display = "flex"; $D("dd-pstat").textContent = "播放失败: " + String(e).slice(0, 60); }
