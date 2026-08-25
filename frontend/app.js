@@ -954,85 +954,89 @@ async function onDdPlay() {
 }
 
 /* ===== 演员资料页(从详情页演员胶囊进入) ===== */
-let DD_ACTOR = null;   // {sid, actor, genres, videos[], next} 缓存
+let DD_ACTOR = null;   // {sid, actor, genres, videos[], next, week, loading}
+function shuffle(arr) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function fmtBirthY(ts) { if (!ts) return ""; const d = new Date(ts * 1000); return d.getFullYear() + "/" + String(d.getMonth() + 1).padStart(2, "0") + "/" + String(d.getDate()).padStart(2, "0"); }
 async function openActorPage(sid) {
   $D("actor-detail").style.display = "flex";
   if (location.hash !== "#/actor/" + sid) history.pushState(null, "", "#/actor/" + sid);
   const body = $D("actor-body");
   if (DD_ACTOR && DD_ACTOR.sid === sid) { renderActor(body, DD_ACTOR); return; }
   body.innerHTML = '<div class="dd-plh">正在加载演员资料…</div>';
-  let data = null;
+  let data = null, week = null;
   try {
-    const r = await toFetch("/proxy/v3/actor/" + encodeURIComponent(sid) + "/videos?actor_type=long&limit=20&next=0", { headers: { "accept": "application/json" } });
+    const [r, rw] = await Promise.all([
+      toFetch("/proxy/v3/actor/" + encodeURIComponent(sid) + "/videos?actor_type=long&limit=20&next=0", { headers: { "accept": "application/json" } }),
+      toFetch("/proxy/v3/result/popular_week/video/general", { headers: { "accept": "application/json" } })
+    ]);
     if (r.ok) data = await r.json();
+    if (rw.ok) { const wj = await rw.json(); week = wj.videos || []; }
   } catch (_) {}
   if (!data) { body.innerHTML = '<div class="dd-plh">演员资料加载失败</div>'; return; }
-  DD_ACTOR = { sid, actor: data.actor || {}, genres: data.genres || [], videos: data.videos || [], next: data.next || null };
+  DD_ACTOR = { sid, actor: data.actor || {}, genres: data.genres || [], videos: data.videos || [], next: data.next != null ? data.next : null, week: week || [], loading: false };
+  bindActorScroll(body, DD_ACTOR);
   renderActor(body, DD_ACTOR);
 }
-function fmtBirth(ts) {
-  if (!ts) return "";
-  const d = new Date(ts * 1000);
-  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+function actorCard(v) {
+  return dubVideoCard(v, { vip: !!v.exclusive, onClick: (x) => openDubbingDetail(x.code, x.code, x.cover64 || "", false) });
 }
 function renderActor(body, A) {
   const a = A.actor || {};
   body.innerHTML = "";
-  // 头部: 大头像 + 名字 + 类型 + 属性
+  // 居中头部: 头像 / 名称 / meta(生日|罩杯|片数)
   const head = document.createElement("div"); head.className = "ac-head";
+  const avWrap = document.createElement("div"); avWrap.className = "ac-avwrap";
   const av = document.createElement("div"); av.className = "ac-avatar";
-  const img = document.createElement("img"); img.alt = ""; const fb = document.createElement("div"); fb.className = "ac-avfb"; fb.textContent = (a.name || "?").slice(0, 1);
-  if (a.cover64) {
-    img.dataset.cover = a.cover64;
-    img.onload = () => { img.style.display = "block"; fb.style.display = "none"; };
-    img.onerror = () => { fb.style.display = "flex"; try { if (img.parentNode) img.parentNode.removeChild(img); } catch (_) {} };
-    av.appendChild(img); LAZY_OBS.observe(av.querySelector("img"));
-  }
-  av.appendChild(fb); head.appendChild(av);
-  const info = document.createElement("div"); info.className = "ac-info";
-  const nm = document.createElement("div"); nm.className = "ac-name"; nm.textContent = a.name || "-";
-  info.appendChild(nm);
-  const sub = document.createElement("div"); sub.className = "ac-sub";
+  const img = document.createElement("img"); img.alt = "";
+  const fb = document.createElement("div"); fb.className = "ac-avfb"; fb.textContent = (a.name || "?").slice(0, 1);
+  if (a.cover64) { img.dataset.cover = a.cover64; img.onload = () => { img.style.display = "block"; fb.style.display = "none"; }; img.onerror = () => { fb.style.display = "flex"; try { if (img.parentNode) img.parentNode.removeChild(img); } catch (_) {} }; av.appendChild(img); LAZY_OBS.observe(img); }
+  av.appendChild(fb); avWrap.appendChild(av); head.appendChild(avWrap);
+  const nm = document.createElement("h1"); nm.className = "ac-name"; nm.textContent = a.name || "-"; head.appendChild(nm);
+  const meta = document.createElement("div"); meta.className = "ac-meta-line";
   const parts = [];
-  if (a.actor_type_text) parts.push(spanTag(a.actor_type_text, "ac-type"));
-  if (a.cup) parts.push("罩杯 " + a.cup);
-  if (a.birthday) parts.push("生日 " + fmtBirth(a.birthday));
-  if (a.birthplace) parts.push(a.birthplace);
-  if (a.country && a.country !== "other") parts.push(a.country);
-  if (a.video_count != null) parts.push(a.video_count + " 部作品");
-  parts.forEach((x) => { const d2 = document.createElement("span"); if (typeof x === "string") d2.textContent = x; else d2.appendChild(x); d2.className = "ac-meta"; info.appendChild(d2); });
-  head.appendChild(info);
+  if (a.birthday) parts.push(fmtBirthY(a.birthday));
+  if (a.cup) parts.push(a.cup + " CUP");
+  if (a.video_count != null) parts.push(a.video_count + " 部片");
+  meta.textContent = parts.join("  |  ");
+  head.appendChild(meta);
   body.appendChild(head);
-  // 流派 tags
-  if (A.genres && A.genres.length) {
+  // genres 随机 10 个胶囊(居中)
+  const gs = shuffle(A.genres || []).slice(0, 10);
+  if (gs.length) {
     const g = document.createElement("div"); g.className = "ac-genres";
-    A.genres.slice(0, 20).forEach((x) => { const t = document.createElement("span"); t.className = "ac-tag"; t.textContent = x.name || ""; g.appendChild(t); });
+    gs.forEach((x) => { const t = document.createElement("span"); t.className = "ac-tag"; t.textContent = x.name || ""; g.appendChild(t); });
     body.appendChild(g);
   }
-  // 视频网格
-  const grid = document.createElement("div"); grid.className = "ac-grid";
-  body.appendChild(grid);
-  let next = A.next;
-  const fill = (list) => { list.forEach((v) => {
-    const card = dubVideoCard(v, { vip: !!v.exclusive, onClick: (x) => openDubbingDetail(x.code, x.code, x.cover64 || "", /*replace=false*/false) });
-    grid.appendChild(card);
-  }); };
-  fill(A.videos || []);
-  if (next != null && next !== "" && next !== 0) {
-    const more = document.createElement("button"); more.className = "ac-more"; more.textContent = "加载更多";
-    more.onclick = async () => {
-      more.disabled = true; more.textContent = "加载中…";
-      try {
-        const r = await toFetch("/proxy/v3/actor/" + A.sid + "/videos?actor_type=long&limit=20&next=" + next, { headers: { "accept": "application/json" } });
-        const d = await r.json();
-        fill(d.videos || []); next = d.next || null;
-        A.videos = (A.videos || []).concat(d.videos || []); A.next = next;
-        if (next == null || next === "" || next === 0) { more.remove(); }
-        else { more.disabled = false; more.textContent = "加载更多"; }
-      } catch (_) { more.disabled = false; more.textContent = "加载更多"; }
-    };
-    body.appendChild(more);
+  // 🔥本周淫幕亮点(横向滑动)
+  if (A.week && A.week.length) {
+    const sec = document.createElement("section"); sec.className = "ac-week";
+    const wt = document.createElement("div"); wt.className = "ac-week-title"; wt.textContent = "🔥 本周淫幕亮点";
+    const hs = document.createElement("div"); hs.className = "ac-week-scroll";
+    A.week.forEach((v) => hs.appendChild(actorCard(v)));
+    sec.appendChild(wt); sec.appendChild(hs); body.appendChild(sec);
   }
+  // 出演视频 Grid(无限滚动分页)
+  const grid = document.createElement("div"); grid.className = "ac-grid"; body.appendChild(grid);
+  (A.videos || []).forEach((v) => grid.appendChild(actorCard(v)));
+  if (A.next != null && A.next !== "" && A.next !== 0) { const end = document.createElement("div"); end.className = "ac-end"; end.textContent = "加载中…"; body.appendChild(end); }
+}
+function bindActorScroll(body, A) {
+  body.addEventListener("scroll", async () => {
+    if (!A || A.loading || A.next == null || A.next === "" || A.next === 0) return;
+    if (body.scrollTop + body.clientHeight < body.scrollHeight - 650) return;
+    A.loading = true;
+    try {
+      const r = await toFetch("/proxy/v3/actor/" + A.sid + "/videos?actor_type=long&limit=20&next=" + A.next, { headers: { "accept": "application/json" } });
+      const d = await r.json();
+      const grid = body.querySelector(".ac-grid");
+      (d.videos || []).forEach((v) => grid.appendChild(actorCard(v)));
+      A.videos = (A.videos || []).concat(d.videos || []);
+      A.next = d.next != null ? d.next : null;
+    } catch (_) {}
+    A.loading = false;
+    const end = body.querySelector(".ac-end");
+    if (end) { if (A.next == null || A.next === "" || A.next === 0) { end.textContent = "到底了, 没有更多出演作品"; } else { end.textContent = "加载中…"; } }
+  }, { passive: true });
 }
 function spanTag(t, cls) { const s2 = document.createElement("span"); s2.className = cls; s2.textContent = t; return s2; }
 function closeActorPage() { if (location.hash.startsWith("#/actor/")) history.back(); }

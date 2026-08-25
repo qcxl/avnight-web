@@ -432,28 +432,32 @@ img { border: 0 !important; outline: 0 !important; box-shadow: none !important; 
   background: linear-gradient(150deg,#2a324a,#141824); color: var(--accent); font-size: 12.5px; font-weight: 600;
   border: 1px solid var(--border-strong); flex: none; }
 .dd-actor-name { font-size: 12.5px; color: var(--text); white-space: nowrap; }
-/* ===== 演员资料页 ===== */
+/* ===== 演员资料页(App 居中排布) ===== */
 .actor-detail { position: fixed; inset: 0; z-index: 90; display: none; flex-direction: column;
   background: var(--bg); overflow: hidden; }
-.actor-body { flex: 1; overflow-y: auto; padding: 6px 16px 34px; }
-.ac-head { display: flex; gap: 16px; align-items: flex-start; padding: 6px 2px 14px; }
-.ac-avatar { width: 96px; height: 96px; border-radius: 16px; overflow: hidden; position: relative; flex: none;
+.actor-body { flex: 1; overflow-y: auto; padding: 6px 16px 40px; }
+.ac-head { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 10px 2px 16px; }
+.ac-avwrap { width: 110px; height: 110px; position: relative; }
+.ac-avatar { width: 110px; height: 110px; border-radius: 18px; overflow: hidden; position: relative;
   background: linear-gradient(150deg,#2a324a,#141824); border: 1px solid var(--border-strong); }
 .ac-avatar img { width: 100%; height: 100%; object-fit: cover; display: none; }
 .ac-avfb { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  color: var(--accent); font-size: 40px; font-weight: 700; }
-.ac-info { display: flex; flex-direction: column; gap: 7px; min-width: 0; padding-top: 4px; }
-.ac-name { font-family: var(--font-disp); font-size: 21px; font-weight: 700; color: #fff; letter-spacing: .5px; }
-.ac-sub { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12.5px; color: var(--text-dim); }
-.ac-meta { display: inline-flex; align-items: center; gap: 4px; }
-.ac-type { color: var(--accent); font-weight: 600; }
-.ac-genres { display: flex; flex-wrap: wrap; gap: 8px; padding: 2px 0 14px; }
+  color: var(--accent); font-size: 46px; font-weight: 700; }
+.ac-name { font-family: var(--font-disp); font-size: 23px; font-weight: 700; color: #fff; letter-spacing: 1px; margin: 0;
+  text-align: center; }
+.ac-meta-line { font-size: 13px; color: var(--text-dim); letter-spacing: .5px; text-align: center; }
+.ac-genres { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 6px 0 18px; }
 .ac-tag { font-size: 12px; color: var(--text); background: var(--bg-elev2); border: 1px solid var(--border-strong);
-  border-radius: 999px; padding: 4px 11px; }
-.ac-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 14px; }
-.ac-more { display: block; margin: 18px auto 6px; padding: 10px 34px; background: var(--bg-elev2);
-  border: 1px solid var(--border-strong); border-radius: 8px; color: var(--text-dim); cursor: pointer; font-size: 13.5px; }
-.ac-more:hover { border-color: var(--accent); color: var(--text); }
+  border-radius: 999px; padding: 4px 11px; white-space: nowrap; }
+/* 🔥本周淫幕亮点 横向滑动 */
+.ac-week { margin: 2px 0 20px; }
+.ac-week-title { font-size: 15px; font-weight: 700; color: #fff; padding: 4px 2px 10px; letter-spacing: .5px; }
+.ac-week-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 2px 2px 8px;
+  scrollbar-width: none; -ms-overflow-style: none; }
+.ac-week-scroll::-webkit-scrollbar { display: none; height: 0; }
+.ac-week-scroll .ci-video { flex: none; width: 210px; }
+.ac-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 14px; padding-top: 4px; }
+.ac-end { text-align: center; color: var(--text-faint); font-size: 12.5px; padding: 16px 0 4px; letter-spacing: .5px; }
 /* VIP 角标(卡片媒体右上) */
 .vip-badge { position: absolute; top: 6px; right: 6px; z-index: 3; font-size: 10.5px; font-weight: 700; letter-spacing: .5px;
   color: #0b0e14; background: linear-gradient(135deg,#ffd76a,#f0b03c); border-radius: 4px; padding: 2px 6px;
