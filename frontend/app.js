@@ -778,7 +778,7 @@ function renderActorRow(box, list) {
     const nm = document.createElement("span"); nm.className = "dd-actor-name"; nm.textContent = a.name || "";
     row.appendChild(nm);
     row.style.cursor = "pointer";
-    row.onclick = (ev) => { ev.stopPropagation(); if (a.sid != null) openActorPage(a.sid); };
+    row.onclick = (ev) => { ev.stopPropagation(); if (a.sid != null) openActorPage(a.sid, true); };
     box.appendChild(row);
   });
 }
@@ -965,9 +965,13 @@ async function onDdPlay() {
 let DD_ACTOR = null;   // {sid, actor, genres, videos[], next, week, loading}
 function shuffle(arr) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function fmtBirthY(ts) { if (!ts) return ""; const d = new Date(ts * 1000); return d.getFullYear() + "/" + String(d.getMonth() + 1).padStart(2, "0") + "/" + String(d.getDate()).padStart(2, "0"); }
-async function openActorPage(sid) {
+async function openActorPage(sid, replace) {
   $D("actor-detail").style.display = "flex";
-  if (location.hash !== "#/actor/" + sid) history.pushState(null, "", "#/actor/" + sid);
+  const target = "#/actor/" + sid;
+  if (location.hash !== target) {
+    if (replace) history.replaceState(null, "", target);   // 从详情页进入: 替换详情(关旧详情), 返回直达首页
+    else history.pushState(null, "", target);
+  }
   const body = $D("actor-body");
   if (DD_ACTOR && DD_ACTOR.sid === sid) { renderActor(body, DD_ACTOR); return; }
   body.innerHTML = '<div class="dd-plh">正在加载演员资料…</div>';
@@ -986,7 +990,10 @@ async function openActorPage(sid) {
   renderActor(body, DD_ACTOR);
 }
 function actorCard(v) {
-  return dubVideoCard(v, { vip: !!v.exclusive, onClick: (x) => openDubbingDetail(x.code, x.code, x.cover64 || "", false) });
+  return dubVideoCard(v, { vip: !!v.exclusive, onClick: (x) => {
+    $D("actor-detail").style.display = "none";               // 关闭演员页
+    openDubbingDetail(x.code, x.code, x.cover64 || "", true); // 替换开新视频详情(关旧详情, 返回直达首页)
+  } });
 }
 function renderActor(body, A) {
   const a = A.actor || {};
