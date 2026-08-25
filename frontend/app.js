@@ -779,8 +779,8 @@ async function loadActors(code) {
     const fb = document.createElement("span"); fb.className = "dd-actor-avfb"; fb.textContent = (a.name || "?").slice(0, 1);
     if (a.cover64) {
       av.dataset.cover = a.cover64;
-      av.onload = () => { av.style.display = "block"; };
-      av.onerror = () => { try { av.parentNode.removeChild(av); } catch (_) {} };
+      av.onload = () => { av.style.display = "block"; fb.style.display = "none"; };
+      av.onerror = () => { fb.style.display = "inline-flex"; try { if (av.parentNode) av.parentNode.removeChild(av); } catch (_) {} };
       row.appendChild(av); LAZY_OBS.observe(av);
     } else { av.style.display = "none"; row.appendChild(av); }
     row.appendChild(fb);
