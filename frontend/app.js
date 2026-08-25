@@ -887,11 +887,17 @@ async function onDdPlay() {
     const ts = parseInt(r.headers.get("x-avnight-time"), 10);
     const plain = await videoCryptDecrypt(ts * 1000, await r.text());
     const info = JSON.parse(plain); const vd = info.video || {};
-    // 只取完整版清晰度(480>720>240>…), 排除 intro/deepMosaics(预告流, 时长仅10s/几秒, 会导致封面时长≠实际)
+    // 完整版优先(480>720>240>…); 无完整版但服务端有 intro 预告 → 播预览并明确标注(奶币/VIP 付费墙)
     const srcs = vd.sources || {};
     const FULL = ["1080", "720", "480", "360", "240"];
-    const m3u8 = FULL.map((k) => srcs[k]).find((x) => !!x) || "";
-    if (!m3u8) { $D("dd-pstat").textContent = "该视频暂无完整播放源 (服务端未提供完整版)"; $D("dd-playbtn").style.display = "flex"; return; }
+    let m3u8 = FULL.map((k) => srcs[k]).find((x) => !!x) || "";
+    let isPreview = false;
+    if (!m3u8 && srcs["intro"]) { m3u8 = srcs["intro"]; isPreview = true; }
+    if (!m3u8) {
+      $D("dd-pstat").textContent = "该视频为奶币/VIP 内容，完整版需登录后在 App/网页购买解锁，暂无法播放";
+      $D("dd-playbtn").style.display = "flex"; return;
+    }
+    if (isPreview) $D("dd-pstat").textContent = "正在加载预览… 此视频完整版为奶币/VIP 内容，需购买解锁";
     $D("dd-pstat").textContent = "播放地址已获取, 正在加载…";
     // 经 Worker 取 m3u8 并重写分片/密钥 URL 为 Worker 代理(跨域 CORS)
     const m3u8Text = await (await toFetch(playProxyUrl(m3u8))).text();
