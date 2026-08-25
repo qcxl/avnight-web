@@ -758,10 +758,42 @@ function appendAltBatch() {
   ALT.busy = false;
   if (ALT.ri >= ALT.recommend.length && ALT.mi >= ALT.mixes.length) ALT.done = true;
 }
+let DD_VIDEO_INFO = null;   // {code, actors[]} 当前视频 info 缓存(演员行)
+async function loadActors(code) {
+  const box = $D("dd-actors"); if (!box) return;
+  box.innerHTML = "";
+  if (!DD_VIDEO_INFO || DD_VIDEO_INFO.code !== code) {
+    DD_VIDEO_INFO = null;
+    try {
+      const r = await toFetch("/proxy/v3/video/" + encodeURIComponent(code) + "/info?cdn=c", { headers: { "accept": "application/json" } });
+      if (r.ok) {
+        const ts = parseInt(r.headers.get("x-avnight-time"), 10);
+        const vd = (JSON.parse(await videoCryptDecrypt(ts * 1000, await r.text())) || {}).video || {};
+        DD_VIDEO_INFO = { code, actors: vd.actors || [] };
+      }
+    } catch (_) {}
+  }
+  (DD_VIDEO_INFO && DD_VIDEO_INFO.actors || []).slice(0, 4).forEach((a) => {
+    const row = document.createElement("div"); row.className = "dd-actor";
+    const av = document.createElement("img"); av.className = "dd-actor-av"; av.alt = "";
+    const fb = document.createElement("span"); fb.className = "dd-actor-avfb"; fb.textContent = (a.name || "?").slice(0, 1);
+    if (a.cover64) {
+      av.dataset.cover = a.cover64;
+      av.onload = () => { av.style.display = "block"; };
+      av.onerror = () => { try { av.parentNode.removeChild(av); } catch (_) {} };
+      row.appendChild(av); LAZY_OBS.observe(av);
+    } else { av.style.display = "none"; row.appendChild(av); }
+    row.appendChild(fb);
+    const nm = document.createElement("span"); nm.className = "dd-actor-name"; nm.textContent = a.name || "";
+    row.appendChild(nm);
+    box.appendChild(row);
+  });
+}
 async function renderVideoTab() {
   const code = DD.targetVcode || (DD.videos[0] && DD.videos[0].code) || DD.col;
   const cur = DD.videos.find((v) => v.code === code);
   $D("dd-vtitle").textContent = (cur && cur.title) || "";
+  loadActors(code);   // 标题下方: 演员头像+名字 (video/info.actors)
   // 一次渲染: 先给加载占位, suggestions 到达后统一填充(避免两段内容不同造成的"刷2次"观感)
   const cbox = $D("dd-carousel"), alt = $D("dd-altwrap");
   cbox.innerHTML = '<div class="dd-plh">正在加载推荐…</div>';
