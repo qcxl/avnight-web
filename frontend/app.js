@@ -668,7 +668,7 @@ function openDubbingDetail(colCode, vcode, cover, replace) {
   ddCover(cover || "");
   // 清空上一视频残留(标题/你可能喜欢/交替循环/精彩片段), 避免新数据到达前显示旧内容
   $D("dd-vtitle").textContent = "";
-  $D("dd-carousel").innerHTML = "";
+  $D("dd-carousel").innerHTML = '<div class="dd-plh">正在加载推荐…</div>';   // 点击瞬间同步占位, 旧数据零帧
   $D("dd-altwrap").innerHTML = "";
   const hl = document.getElementById("dd-hl-block"); if (hl) hl.remove();
   DD_SUGG = null;
