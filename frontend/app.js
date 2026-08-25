@@ -226,6 +226,8 @@ document.querySelectorAll(".site-item").forEach((btn) => {
   };
 });
 window.addEventListener("hashchange", () => {
+  const am = location.hash.match(/^#\/actor\/(\d+)/);
+  if (am) { openActorPage(parseInt(am[1], 10)); return; }
   const m = location.hash.match(/^#\/dub\/([^/]+)(?:\/([^/]+))?/);
   if (m) { openDubbingDetail(decodeURIComponent(m[1]), m[2] ? decodeURIComponent(m[2]) : null, ""); return; }
   const { site, tab } = parseRoute();
@@ -424,6 +426,7 @@ function dubVideoCard(v, opts) {
   el.title = v.title || "";
   const m = dubMedia(v.cover64, (opts && opts.mediaCls) || "cv", v.title || v.code || "");
   if (v.duration != null) m.appendChild(durBadge(v.duration));
+  if (opts && opts.vip) { const vb = document.createElement("span"); vb.className = "vip-badge"; vb.textContent = "VIP"; m.appendChild(vb); }
   el.appendChild(m);
   const t = document.createElement("div"); t.className = "cv-title"; t.textContent = v.title || v.code || ""; el.appendChild(t);
   if (opts && opts.onClick) el.onclick = () => opts.onClick(v);
@@ -786,6 +789,8 @@ async function loadActors(code) {
     row.appendChild(fb);
     const nm = document.createElement("span"); nm.className = "dd-actor-name"; nm.textContent = a.name || "";
     row.appendChild(nm);
+    row.style.cursor = "pointer";
+    row.onclick = (ev) => { ev.stopPropagation(); openActorPage(a.sid); };
     box.appendChild(row);
   });
 }
@@ -948,6 +953,90 @@ async function onDdPlay() {
   } catch (e) { $D("dd-playbtn").style.display = "flex"; $D("dd-pstat").textContent = "播放失败: " + String(e).slice(0, 60); }
 }
 
+/* ===== 演员资料页(从详情页演员胶囊进入) ===== */
+let DD_ACTOR = null;   // {sid, actor, genres, videos[], next} 缓存
+async function openActorPage(sid) {
+  $D("actor-detail").style.display = "flex";
+  if (location.hash !== "#/actor/" + sid) history.pushState(null, "", "#/actor/" + sid);
+  const body = $D("actor-body");
+  if (DD_ACTOR && DD_ACTOR.sid === sid) { renderActor(body, DD_ACTOR); return; }
+  body.innerHTML = '<div class="dd-plh">正在加载演员资料…</div>';
+  let data = null;
+  try {
+    const r = await toFetch("/proxy/v3/actor/" + encodeURIComponent(sid) + "/videos?actor_type=long&limit=20&next=0", { headers: { "accept": "application/json" } });
+    if (r.ok) data = await r.json();
+  } catch (_) {}
+  if (!data) { body.innerHTML = '<div class="dd-plh">演员资料加载失败</div>'; return; }
+  DD_ACTOR = { sid, actor: data.actor || {}, genres: data.genres || [], videos: data.videos || [], next: data.next || null };
+  renderActor(body, DD_ACTOR);
+}
+function fmtBirth(ts) {
+  if (!ts) return "";
+  const d = new Date(ts * 1000);
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+function renderActor(body, A) {
+  const a = A.actor || {};
+  body.innerHTML = "";
+  // 头部: 大头像 + 名字 + 类型 + 属性
+  const head = document.createElement("div"); head.className = "ac-head";
+  const av = document.createElement("div"); av.className = "ac-avatar";
+  const img = document.createElement("img"); img.alt = ""; const fb = document.createElement("div"); fb.className = "ac-avfb"; fb.textContent = (a.name || "?").slice(0, 1);
+  if (a.cover64) {
+    img.dataset.cover = a.cover64;
+    img.onload = () => { img.style.display = "block"; fb.style.display = "none"; };
+    img.onerror = () => { fb.style.display = "flex"; try { if (img.parentNode) img.parentNode.removeChild(img); } catch (_) {} };
+    av.appendChild(img); LAZY_OBS.observe(av.querySelector("img"));
+  }
+  av.appendChild(fb); head.appendChild(av);
+  const info = document.createElement("div"); info.className = "ac-info";
+  const nm = document.createElement("div"); nm.className = "ac-name"; nm.textContent = a.name || "-";
+  info.appendChild(nm);
+  const sub = document.createElement("div"); sub.className = "ac-sub";
+  const parts = [];
+  if (a.actor_type_text) parts.push(spanTag(a.actor_type_text, "ac-type"));
+  if (a.cup) parts.push("罩杯 " + a.cup);
+  if (a.birthday) parts.push("生日 " + fmtBirth(a.birthday));
+  if (a.birthplace) parts.push(a.birthplace);
+  if (a.country && a.country !== "other") parts.push(a.country);
+  if (a.video_count != null) parts.push(a.video_count + " 部作品");
+  parts.forEach((x) => { const d2 = document.createElement("span"); if (typeof x === "string") d2.textContent = x; else d2.appendChild(x); d2.className = "ac-meta"; info.appendChild(d2); });
+  head.appendChild(info);
+  body.appendChild(head);
+  // 流派 tags
+  if (A.genres && A.genres.length) {
+    const g = document.createElement("div"); g.className = "ac-genres";
+    A.genres.slice(0, 20).forEach((x) => { const t = document.createElement("span"); t.className = "ac-tag"; t.textContent = x.name || ""; g.appendChild(t); });
+    body.appendChild(g);
+  }
+  // 视频网格
+  const grid = document.createElement("div"); grid.className = "ac-grid";
+  body.appendChild(grid);
+  let next = A.next;
+  const fill = (list) => { list.forEach((v) => {
+    const card = dubVideoCard(v, { vip: !!v.exclusive, onClick: (x) => openDubbingDetail(x.code, x.code, x.cover64 || "", /*replace=false*/false) });
+    grid.appendChild(card);
+  }); };
+  fill(A.videos || []);
+  if (next != null && next !== "" && next !== 0) {
+    const more = document.createElement("button"); more.className = "ac-more"; more.textContent = "加载更多";
+    more.onclick = async () => {
+      more.disabled = true; more.textContent = "加载中…";
+      try {
+        const r = await toFetch("/proxy/v3/actor/" + A.sid + "/videos?actor_type=long&limit=20&next=" + next, { headers: { "accept": "application/json" } });
+        const d = await r.json();
+        fill(d.videos || []); next = d.next || null;
+        A.videos = (A.videos || []).concat(d.videos || []); A.next = next;
+        if (next == null || next === "" || next === 0) { more.remove(); }
+        else { more.disabled = false; more.textContent = "加载更多"; }
+      } catch (_) { more.disabled = false; more.textContent = "加载更多"; }
+    };
+    body.appendChild(more);
+  }
+}
+function spanTag(t, cls) { const s2 = document.createElement("span"); s2.className = cls; s2.textContent = t; return s2; }
+function closeActorPage() { if (location.hash.startsWith("#/actor/")) history.back(); }
+
 function closeDubbingDetail() {
   $D("dub-detail").style.display = "none";
   // 返回上一级: history.back() 恢复原 hash, AI中配保留 DOM/滚动(DUB_CACHE + dataset.dubbed) 不重建
@@ -960,6 +1049,7 @@ function closeDubbingDetail() {
 
 document.addEventListener("DOMContentLoaded", () => {
   const back = $D("dd-back"); if (back) back.onclick = closeDubbingDetail;
+  const aback = $D("actor-back"); if (aback) aback.onclick = closeActorPage;
   const pb = $D("dd-playbtn"); if (pb) pb.onclick = onDdPlay;
   const wipb = $D("wip-back"); if (wipb) wipb.onclick = () => { $D("wip-overlay").style.display = "none"; };
   const dtabs = $D("dd-tabs");
@@ -970,4 +1060,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   const m = location.hash.match(/^#\/dub\/([^/]+)/);
   if (m) openDubbingDetail(decodeURIComponent(m[1]), null, "");
+  else { const am = location.hash.match(/^#\/actor\/(\d+)/); if (am) openActorPage(parseInt(am[1], 10)); }
 });
