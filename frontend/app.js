@@ -762,21 +762,9 @@ function appendAltBatch() {
   if (ALT.ri >= ALT.recommend.length && ALT.mi >= ALT.mixes.length) ALT.done = true;
 }
 let DD_VIDEO_INFO = null;   // {code, actors[]} 当前视频 info 缓存(演员行)
-async function loadActors(code) {
-  const box = $D("dd-actors"); if (!box) return;
+function renderActorRow(box, list) {
   box.innerHTML = "";
-  if (!DD_VIDEO_INFO || DD_VIDEO_INFO.code !== code) {
-    DD_VIDEO_INFO = null;
-    try {
-      const r = await toFetch("/proxy/v3/video/" + encodeURIComponent(code) + "/info?cdn=c", { headers: { "accept": "application/json" } });
-      if (r.ok) {
-        const ts = parseInt(r.headers.get("x-avnight-time"), 10);
-        const vd = (JSON.parse(await videoCryptDecrypt(ts * 1000, await r.text())) || {}).video || {};
-        DD_VIDEO_INFO = { code, actors: vd.actors || [] };
-      }
-    } catch (_) {}
-  }
-  (DD_VIDEO_INFO && DD_VIDEO_INFO.actors || []).slice(0, 4).forEach((a) => {
+  (list || []).slice(0, 4).forEach((a) => {
     const row = document.createElement("div"); row.className = "dd-actor";
     const av = document.createElement("img"); av.className = "dd-actor-av"; av.alt = "";
     const fb = document.createElement("span"); fb.className = "dd-actor-avfb"; fb.textContent = (a.name || "?").slice(0, 1);
@@ -790,9 +778,29 @@ async function loadActors(code) {
     const nm = document.createElement("span"); nm.className = "dd-actor-name"; nm.textContent = a.name || "";
     row.appendChild(nm);
     row.style.cursor = "pointer";
-    row.onclick = (ev) => { ev.stopPropagation(); openActorPage(a.sid); };
+    row.onclick = (ev) => { ev.stopPropagation(); if (a.sid != null) openActorPage(a.sid); };
     box.appendChild(row);
   });
+}
+async function loadActors(code) {
+  const box = $D("dd-actors"); if (!box) return;
+  // 优先用当前视频对象自带的 actors(card 数据已含 sid/name/cover64, 不依赖 info 接口, 避免 503/限流导致无演员行)
+  const cur = (DD.videos || []).find((v) => v.code === code);
+  const local = (cur && cur.actors) || [];
+  if (local.length) { renderActorRow(box, local); return; }
+  // info 兜底(拉取该视频完整 actors)
+  if (!DD_VIDEO_INFO || DD_VIDEO_INFO.code !== code) {
+    DD_VIDEO_INFO = null;
+    try {
+      const r = await toFetch("/proxy/v3/video/" + encodeURIComponent(code) + "/info?cdn=c", { headers: { "accept": "application/json" } });
+      if (r.ok) {
+        const ts = parseInt(r.headers.get("x-avnight-time"), 10);
+        const vd = (JSON.parse(await videoCryptDecrypt(ts * 1000, await r.text())) || {}).video || {};
+        DD_VIDEO_INFO = { code, actors: vd.actors || [] };
+      }
+    } catch (_) {}
+  }
+  renderActorRow(box, (DD_VIDEO_INFO && DD_VIDEO_INFO.actors) || []);
 }
 async function renderVideoTab() {
   const code = DD.targetVcode || (DD.videos[0] && DD.videos[0].code) || DD.col;
